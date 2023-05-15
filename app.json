@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c106b9bb-0949-49aa-a555-f4206d01b7a7"
+      }
+    },
+    "owner": "sebmicsep"
   }
 }
