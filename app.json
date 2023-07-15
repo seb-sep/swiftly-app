@@ -3,6 +3,7 @@
     "name": "swiftly",
     "slug": "swiftly",
     "version": "1.0.0",
+    "scheme": "myapp",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -24,13 +25,17 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     },
     "extra": {
       "eas": {
         "projectId": "c106b9bb-0949-49aa-a555-f4206d01b7a7"
       }
     },
-    "owner": "sebmicsep"
+    "owner": "sebmicsep",
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
