@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { saveNote } from '../utils/backend'
+import { saveNote, transcribeAudio } from '../utils/backend'
+
 import { Audio } from 'expo-av';
 
 export default function NotePage() {
@@ -9,7 +10,8 @@ export default function NotePage() {
     const recordInput = () => setNoteText('This is a testk');
 
     const [recording, setRecording] = useState<Audio.Recording>();
-    const [url, setUrl] = useState('');
+    const [fileUri, setFileUri] = useState('');
+    const [debug, setDebug] = useState('');
     async function startRecording() {
       try {
         console.log('Requesting permissions..');
@@ -44,9 +46,21 @@ export default function NotePage() {
       const uri = recording.getURI();
       console.log('Recording stopped and stored at', uri);
       if (uri) {
-
-      setUrl(uri);
+        setFileUri(uri);
       }
+    }
+
+    async function transcribeAndSave() {
+        setDebug('trying to save');
+        try {
+            const content = await transcribeAudio(fileUri);
+            console.log("Response is " + content);
+            //await saveNote("Goku", "demo title", content);
+            setDebug(content);
+        } catch (err) {
+            console.log("There was an error: ", err);
+            setDebug(JSON.stringify(err));
+        }
     }
 
     return (
@@ -60,10 +74,11 @@ export default function NotePage() {
                 onPress={recording ? stopRecording : startRecording}
             />
             <Button
-                onPress={() => saveNote(testUsername, 'adding from the mobile app', noteText)}
+                onPress={transcribeAndSave}
                 title='Save Note'
             />
-            <Text>{url}</Text>
+            <Text>{fileUri}</Text>
+            <Text>{debug}</Text>
         </View>
     )
 }
