@@ -21,6 +21,9 @@ export async function saveNote(username: string, title: string, content: string)
 
 }
 
+type transcribeResult = {
+    'text': string
+}
 export async function transcribeAudio(fileUri: string): Promise<string> {
     const url = getBackendURL();
     try {
@@ -33,7 +36,7 @@ export async function transcribeAudio(fileUri: string): Promise<string> {
             httpMethod: 'POST',
             uploadType: fs.FileSystemUploadType.MULTIPART
             });
-        return result.body;
+        return JSON.parse(result.body).text;
     } catch (error) {
         return JSON.stringify(error);
     }

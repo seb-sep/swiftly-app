@@ -1,12 +1,33 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Link } from 'expo-router';
-//import { hello } from './modules/speech-to-text';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
+
 export default function App() {
+  const storeUsername = async (username: string) => {
+    try {
+      await AsyncStorage.setItem('current-user', username);
+      console.log('Current user ' + username);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const [username, setUsername] = useState('');
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <Link href="/note">CLick here to write note</Link>
+      <Link href="/note">click here to write note</Link>
+      <TextInput
+        onChangeText={setUsername}
+        value={username}
+        placeholder='enter username here'
+      />
+      <Button
+        onPress={() => storeUsername(username)}
+        title='sign in'
+        />
       <StatusBar style="auto" />
     </View>
   );
