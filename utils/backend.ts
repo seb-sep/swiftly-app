@@ -1,11 +1,10 @@
 import axios from 'axios';
+
+import * as fs from 'expo-file-system';
 import { Configuration, OpenAIApi } from 'openai';
 
 export async function saveNote(username: string, title: string, content: string): Promise<string> {
-    const url = process.env.EXPO_PUBLIC_API_URL;
-    if (!url) {
-        throw new Error('Backend URL is undefined.');
-    }
+    const url = getBackendURL();
 
     try {
         const response = await axios.post(`${url}/${username}/notes/save`, { title: title, content: content });
@@ -21,6 +20,26 @@ export async function saveNote(username: string, title: string, content: string)
     return ""
 
 }
+
+export async function transcribeAudio(fileUri: string): Promise<string> {
+    const url = getBackendURL();
+    const result = await fs.uploadAsync(`${url}/transcribe`, fileUri, {
+        fieldName: 'file',
+        httpMethod: 'POST',
+        uploadType: fs.FileSystemUploadType.BINARY_CONTENT
+    });
+    return result.body;
+}
+
+function getBackendURL(): string {
+    const url = process.env.EXPO_PUBLIC_API_URL;
+    if (!url) {
+        throw new Error('Backend URL is undefined.');
+    }
+    return url
+}
+
+
 /*
 async function transcribeAudio(path: string) {
 
