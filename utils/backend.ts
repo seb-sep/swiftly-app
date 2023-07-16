@@ -29,6 +29,7 @@ export async function transcribeAudio(fileUri: string): Promise<string> {
                 "Accept": "application/json",
                 "Content-Type": 'multipart/form-data'
             },
+            fieldName: 'file',
             httpMethod: 'POST',
             uploadType: fs.FileSystemUploadType.MULTIPART
             });
