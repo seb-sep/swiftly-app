@@ -11,9 +11,6 @@ export async function saveNote(username: string, title: string, content: string)
         return response.data;
                     
     } catch (error) {
-        if (error instanceof Error) {
-            console.log(error.message)
-        }
         console.error(error);
     }
 
@@ -21,9 +18,30 @@ export async function saveNote(username: string, title: string, content: string)
 
 }
 
-type transcribeResult = {
-    'text': string
+export async function getNote(username: string, title: string): Promise<string> {
+    const url = getBackendURL();
+
+    try {
+        const response = await axios.get(`${url}/${username}/notes/${title}`);
+        return response.data.content as string;
+    } catch (error) {
+        console.error(error);
+        throw(error);
+    }
 }
+
+export async function getTitles(username: string): Promise<string[]> {
+    const url = getBackendURL();
+
+    try {
+        const response = await axios.get(`${url}/${username}/notes`);
+        return response.data as string[];
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function transcribeAudio(fileUri: string): Promise<string> {
     const url = getBackendURL();
     try {
