@@ -22,7 +22,7 @@ export default function NotePage() {
 
     return (
         <View style={styles.container}>
-            <Link href='/notes' style={styles.cornerTopRight}>to notes</Link>
+            <Link href='/titles' style={styles.cornerTopRight}>to notes</Link>
             <Link href='/user' style={styles.cornerTopLeft}>to user</Link>
             <Text>{content}</Text>
         </View>
