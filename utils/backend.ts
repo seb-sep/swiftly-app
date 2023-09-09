@@ -42,24 +42,6 @@ export async function getTitles(username: string): Promise<string[]> {
     }
 }
 
-export async function transcribeAudio(fileUri: string): Promise<string> {
-    const url = getBackendURL();
-    try {
-        const result = await fs.uploadAsync(`${url}/transcribe`, fileUri, {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": 'multipart/form-data'
-            },
-            fieldName: 'file',
-            httpMethod: 'POST',
-            uploadType: fs.FileSystemUploadType.MULTIPART
-            });
-        return JSON.parse(result.body).text;
-    } catch (error) {
-        return JSON.stringify(error);
-    }
-
-}
 
 function getBackendURL(): string {
     const url = process.env.EXPO_PUBLIC_API_URL;

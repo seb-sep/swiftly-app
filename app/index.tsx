@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { saveNote, transcribeAudio } from '../utils/backend'
+import { saveNote } from '../utils/backend'
+import { transcribe } from '../utils/whisper';
 import { Audio } from 'expo-av';
 import { Link, router } from 'expo-router';
 import { loadUsername } from '../utils/datastore';
@@ -62,7 +63,7 @@ export default function NoteTakingPage() {
     async function transcribeAndSave() {
         setDebug('trying to save');
         try {
-            const content = await transcribeAudio(fileUri);
+            const content = await transcribe(fileUri);
             console.log("Response is " + content);
             await saveNote(username, "demo title", content);
             setDebug(content);
