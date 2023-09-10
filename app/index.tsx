@@ -61,12 +61,14 @@ export default function NoteTakingPage() {
     }
 
     async function transcribeAndSave() {
-        setDebug('trying to save');
+        setDebug('transcribing...');
         try {
             const content = await transcribe(fileUri);
             console.log("Response is " + content);
-            await saveNote(username, "demo title", content);
-            setDebug(content);
+            setDebug("note is " + content);
+            //setDebug("saving for user " + username);
+            //await saveNote(username, "demo title", content);
+            //setDebug(content);
         } catch (err) {
             console.log("There was an error: ", err);
             setDebug(JSON.stringify(err));
@@ -87,6 +89,7 @@ export default function NoteTakingPage() {
                 title='Save Note'
             />
             <Text>{username}</Text>
+            <Text>{debug}</Text>
         </View>
     )
 }
