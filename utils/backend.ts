@@ -1,17 +1,17 @@
 import axios from 'axios';
 
 import * as fs from 'expo-file-system';
-import { Configuration, OpenAIApi } from 'openai';
 
 export async function saveNote(username: string, title: string, content: string): Promise<string> {
     const url = getBackendURL();
 
     try {
+        console.log("Trying to save note")
         const response = await axios.post(`${url}/${username}/notes/save`, { title: title, content: content });
         return response.data;
                     
     } catch (error) {
-        console.error(error);
+        console.error(`Error saving note: ${error}`);
     }
 
     return ""
@@ -50,12 +50,13 @@ export async function transcribeAudio(fileUri: string): Promise<string> {
                 "Accept": "application/json",
                 "Content-Type": 'multipart/form-data'
             },
-            fieldName: 'file',
+            fieldName: 'speech_bytes',
             httpMethod: 'POST',
             uploadType: fs.FileSystemUploadType.MULTIPART
             });
-        return JSON.parse(result.body).text;
+        return result.body;
     } catch (error) {
+        console.log("Error in audio transcription: ", error);
         return JSON.stringify(error);
     }
 
