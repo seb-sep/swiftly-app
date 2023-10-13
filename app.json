@@ -1,14 +1,20 @@
 {
   "expo": {
-    "name": "swiftly",
+    "name": "swiftly_app",
     "slug": "swiftly",
+    "privacy": "unlisted",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "version": "1.0.0",
     "scheme": "myapp",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/swiftly_logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/swiftly_logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
