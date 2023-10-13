@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { saveNote, transcribeAudio } from '../utils/backend'
 import { Audio } from 'expo-av';
-import { Link, router } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
 import { loadUsername } from '../utils/datastore';
+import { auth } from '../firebaseConfig';
 
 const customRecordingOptions: Audio.RecordingOptions = {
   isMeteringEnabled: true,
@@ -16,8 +17,8 @@ const customRecordingOptions: Audio.RecordingOptions = {
     bitRate: 128000,
   },
   ios: {
-    extension: '.aac',
-    outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
+    extension: '.wav',
+    outputFormat: Audio.IOSOutputFormat.ALAW,
     audioQuality: Audio.IOSAudioQuality.MAX,
     sampleRate: 44100,
     numberOfChannels: 2,
@@ -39,15 +40,20 @@ export default function NoteTakingPage() {
     const [recording, setRecording] = useState<Audio.Recording>();
     const [fileUri, setFileUri] = useState('');
     const [debug, setDebug] = useState('');
-    useEffect(() => {
-      loadUsername().then((user) => {
-        if (!user) {
-          router.replace('/user');
-        } else {
-          setUsername(user);
-        }
-      });
-    }, []);
+
+
+    useFocusEffect(() => {
+      const user = auth.currentUser;
+
+      //only works if user has email
+      if (user !== null && user.email) {
+        setUsername(user.email);
+      } else {
+        setDebug('no user email found');
+        router.replace('/signin');
+      }
+
+    });
     async function startRecording() {
       try {
         console.log('Requesting permissions..');
@@ -99,10 +105,11 @@ export default function NoteTakingPage() {
         }
     }
 
+
     return (
         <View style={styles.container}>
         <Link href='/titles' style={styles.cornerTopRight}>to notes</Link>
-        <Link href='/user' style={styles.cornerTopLeft}>to user</Link>
+        <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
             <Text>{noteText}</Text>
             <Button
                 title={recording ? 'Stop Recording' : 'Start Recording'}
@@ -112,7 +119,7 @@ export default function NoteTakingPage() {
                 onPress={transcribeAndSave}
                 title='Save Note'
             />
-            <Text>{username}</Text>
+            <Text>{`user: ${username}`}</Text>
             <Text>{debug}</Text>
         </View>
     )

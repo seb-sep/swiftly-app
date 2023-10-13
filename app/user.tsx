@@ -1,36 +1,50 @@
 import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Link } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { storeUsername } from '../utils/datastore';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { auth } from '../firebaseConfig';
+
 
 export default function App() {
 
 
-  const [username, setUsername] = useState('');
+  const [debug, setDebug] = useState('');
+  const [username, storeUsername] = useState('');
+  const [password, storePassword] = useState('');
 
+  // check if the user is already signed in and redirect to the notes page
+  // NEED TO CHANGE THIS BEFOR ETESTING 
+  /*
+  useEffect(() => {
+    
+    router.replace('/notes');
+  }, []);
+  */
+
+    // run through the apple sign in flow
   return (
     <View style={styles.container}>
-      <Link href="/">click here to write note</Link>
+      <Text>log in</Text>
       <TextInput
-        onChangeText={setUsername}
         value={username}
-        placeholder='enter username here'
+        onChangeText={storeUsername}
+        placeholder='username here'
       />
-      <Button
-        onPress={() => {
-          storeUsername(username).then(() => {
-            router.replace('/');
-          });
-
-        }}
-        title='sign in'
-        />
+      <TextInput
+        value={password}
+        onChangeText={storePassword}
+        placeholder='password here'
+      />
+      <Link href='/signup'>sign up</Link>
+      <Text>{debug}</Text>
       <StatusBar style="auto" />
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

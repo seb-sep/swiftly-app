@@ -17,7 +17,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sebmicsep.swiftly"
+      "bundleIdentifier": "com.sebmicsep.swiftly",
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +38,8 @@
     },
     "owner": "sebmicsep",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-apple-authentication"
     ]
   }
 }

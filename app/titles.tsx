@@ -3,26 +3,38 @@ import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { loadUsername } from '../utils/datastore';
 import { getTitles } from '../utils/backend';
+import { auth } from '../firebaseConfig';
+import { router } from 'expo-router';
+import { noteTitle } from '../utils/backend'
 
 export default function TitleListPage() {
-    const [titles, setTitles] = useState<string[]>([])
+    const [titles, setTitles] = useState<noteTitle[]>([])
+ 
     useEffect(() => {
-        loadUsername().then((username) => {
-            if (!username) throw new Error('username does not exist');
-            getTitles(username).then((titles) => {
-                setTitles(titles);
-            });
+      const user = auth.currentUser;
+
+      //only works if user has email
+      if (user !== null && user.email) {
+        getTitles(user.email).then((titles) => {
+          setTitles(titles)
+        })
+        .catch(error => {
+          console.error(error);
         });
-    }, []);
-    
+      } else {
+        console.error('no user email found');
+        router.replace('/signin');
+      }
+
+    }, []);   
     return (
         <View style={styles.container}>
             <Link href='/' style={styles.cornerTopRight}>to record</Link>
-            <Link href='/user' style={styles.cornerTopLeft}>to user</Link>
+            <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
             <FlatList
                 data={titles}
-                renderItem={({item}) => <Link href={`/notes/${item}`}>{item}</Link>}
-                keyExtractor={item => item}
+                keyExtractor={(title) => title.id.toString()}
+                renderItem={({ item }) => <Link href={`/notes/${item.id}`}>{item.title}</Link>}
             />
         </View>
     );

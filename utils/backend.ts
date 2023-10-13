@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, isAxiosError } from 'axios';
 
 import * as fs from 'expo-file-system';
 
@@ -11,18 +11,20 @@ export async function saveNote(username: string, title: string, content: string)
         return response.data;
                     
     } catch (error) {
-        console.error(`Error saving note: ${error}`);
+        if (isAxiosError(error)) {
+            console.error(`Error saving note: ${JSON.stringify(error.response?.data)}`);
+        }
     }
-
     return ""
 
 }
 
-export async function getNote(username: string, title: string): Promise<string> {
+export async function getNote(username: string, id: string): Promise<string> {
     const url = getBackendURL();
 
     try {
-        const response = await axios.get(`${url}/${username}/notes/${title}`);
+        const response = await axios.get(`${url}/${username}/notes/${id}`);
+        console.log(response.data.content);
         return response.data.content as string;
     } catch (error) {
         console.error(error);
@@ -30,12 +32,17 @@ export async function getNote(username: string, title: string): Promise<string> 
     }
 }
 
-export async function getTitles(username: string): Promise<string[]> {
+export type noteTitle = {
+    id: number
+    title: string
+}
+
+export async function getTitles(username: string): Promise<noteTitle[]> {
     const url = getBackendURL();
 
     try {
         const response = await axios.get(`${url}/${username}/notes`);
-        return response.data as string[];
+        return response.data as noteTitle[];
     } catch (error) {
         console.error(error);
         throw error;
@@ -54,12 +61,29 @@ export async function transcribeAudio(fileUri: string): Promise<string> {
             httpMethod: 'POST',
             uploadType: fs.FileSystemUploadType.MULTIPART
             });
-        return result.body;
+        return result.body.split('"').join('');
     } catch (error) {
         console.log("Error in audio transcription: ", error);
         return JSON.stringify(error);
     }
 
+}
+
+export async function createAccount(email: string): Promise<boolean> {
+    const url = getBackendURL();
+
+    try {
+        const response = await axios.post(`${url}/add`, { name: email });
+        if (response.status === 200) {
+            return true;
+        } else {
+            console.error(`Error creating account: ${response.data}}`);
+            return false;
+        }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 }
 
 function getBackendURL(): string {
