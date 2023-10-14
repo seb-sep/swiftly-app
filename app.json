@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "swiftly_app",
+    "name": "swift.ly",
     "slug": "swiftly",
     "privacy": "unlisted",
     "platforms": [
@@ -8,7 +8,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "scheme": "myapp",
     "orientation": "portrait",
     "icon": "./assets/swiftly_logo.png",
