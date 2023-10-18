@@ -6,6 +6,7 @@ import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { auth } from '../firebaseConfig';
 import 'react-native-gesture-handler';
+import { onAuthStateChanged } from 'firebase/auth';
 
 
 
@@ -18,16 +19,13 @@ export default function NoteTakingPage() {
 
 
   useFocusEffect(() => {
-    const user = auth.currentUser;
-
-    //only works if user has email
-    if (user !== null && user.email) {
-      setUsername(user.email);
-    } else {
-      setDebug('no user email found');
-      router.replace('/signin');
-    }
-
+    const authed = onAuthStateChanged(auth, (user) => {
+      if (user && user.email) {
+        setUsername(user.email);
+      } else {
+        router.replace('/signin');
+      }
+    });
   });
 
   async function recordOnPress() {
@@ -68,8 +66,6 @@ export default function NoteTakingPage() {
 
   return (
       <View style={styles.container}>
-      <Link href='/titles' style={styles.cornerTopRight}>to notes</Link>
-      <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
           <Text>{noteText}</Text>
           <Button
               title={recording ? 'Stop Recording' : 'Start Recording'}
@@ -80,6 +76,8 @@ export default function NoteTakingPage() {
           </Pressable>
           <Text>{debug}</Text>
           <Text>{`user: ${username}`}</Text>
+        <Link href='/titles' style={styles.bottomLeft}>to notes</Link>
+        <Link href='/signin' style={styles.bottomRight}>to user</Link>
       </View>
   )
 }
@@ -91,17 +89,17 @@ container: {
   alignItems: 'center',
   justifyContent: 'center',
 },
-cornerTopRight: {
+bottomLeft: {
   position: 'absolute',
-  top: 0,
-  right: 0,
+  bottom: 0,
+  left: 0,
   padding: 10,
   backgroundColor: 'lightblue',
 },
-cornerTopLeft: {
+bottomRight: {
   position: 'absolute',
-  top: 0,
-  left: 0,
+  bottom: 0,
+  right: 0,
   padding: 10,
   backgroundColor: 'lightblue',
 },
