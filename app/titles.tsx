@@ -6,9 +6,16 @@ import { getTitles } from '../utils/backend';
 import { auth } from '../firebaseConfig';
 import { router } from 'expo-router';
 import { noteTitle } from '../utils/backend'
+import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 
 export default function TitleListPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
+    const goBack = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+      if (event.nativeEvent.state === State.END) {
+        console.log('go back');
+        router.replace('/');
+      }
+    };
  
     useEffect(() => {
       const user = auth.currentUser;
@@ -28,6 +35,9 @@ export default function TitleListPage() {
 
     }, []);   
     return (
+      <FlingGestureHandler
+        direction={Directions.RIGHT}
+        onHandlerStateChange={goBack}>
         <View style={styles.container}>
             <Link href='/' style={styles.cornerTopRight}>to record</Link>
             <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
@@ -37,6 +47,7 @@ export default function TitleListPage() {
                 renderItem={({ item }) => <Link href={`/notes/${item.id}`}>{item.title}</Link>}
             />
         </View>
+      </FlingGestureHandler>
     );
 }
 

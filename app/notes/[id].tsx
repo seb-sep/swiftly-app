@@ -5,10 +5,18 @@ import { loadUsername } from "../../utils/datastore";
 import { View, StyleSheet, Text } from "react-native";
 import { Link, router } from 'expo-router';
 import { auth } from "../../firebaseConfig";
+import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 
 export default function NotePage() {
     const id = useLocalSearchParams().id;
     const [content, setContent] = useState('');
+
+    const goBack = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+      if (event.nativeEvent.state === State.END) {
+        console.log('go back');
+        router.replace('/titles');
+      }
+    };
 
     useEffect(() => {
       if (typeof id !== 'string') {
@@ -30,11 +38,15 @@ export default function NotePage() {
     }, []);   
 
     return (
-      <View style={styles.container}>
+      <FlingGestureHandler
+        direction={Directions.RIGHT}
+        onHandlerStateChange={goBack}>
+        <View style={styles.container}>
           <Link href='/titles' style={styles.cornerTopRight}>to notes</Link>
           <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
           <Text>{content}</Text>
-      </View>
+        </View>
+      </FlingGestureHandler>
     );
 
 }

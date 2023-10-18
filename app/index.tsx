@@ -5,6 +5,8 @@ import { startRecording, stopRecording } from '../utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { auth } from '../firebaseConfig';
+import 'react-native-gesture-handler';
+
 
 
 export default function NoteTakingPage() {
