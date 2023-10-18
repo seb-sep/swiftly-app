@@ -46,6 +46,10 @@ export default function NoteTakingPage() {
 
   async function transcribeAndSave() {
     setDebug('transcribing...');
+    if (!fileUri) {
+      setDebug('no file recorded');
+      return;
+    }
     try {
       const content = await transcribeAudio(fileUri);
       setNoteText(content);
