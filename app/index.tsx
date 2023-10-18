@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Pressable, StyleSheet, Text, View } from 'react-native';
 import { saveNote, transcribeAudio } from '../utils/backend'
 import { startRecording, stopRecording } from '../utils/record';
 import { Audio } from 'expo-av';
@@ -69,10 +69,9 @@ export default function NoteTakingPage() {
               title={recording ? 'Stop Recording' : 'Start Recording'}
               onPress={recordOnPress}
           />
-          <Button
-              onPress={transcribeAndSave}
-              title='Save Note'
-          />
+          <Pressable onPress={transcribeAndSave} disabled={!fileUri}>
+            <Text style={fileUri ? styles.buttonOn : styles.buttonOff} >Transcribe Note</Text>
+          </Pressable>
           <Text>{debug}</Text>
           <Text>{`user: ${username}`}</Text>
       </View>
@@ -99,6 +98,12 @@ cornerTopLeft: {
   left: 0,
   padding: 10,
   backgroundColor: 'lightblue',
+},
+buttonOn: {
+  color: 'blue',
+},
+buttonOff: {
+  color: 'gray'
 }
 });
 
