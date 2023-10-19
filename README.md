@@ -5,3 +5,4 @@ https://akveo.github.io/react-native-ui-kitten/
 https://gluestack.io/
 https://localfirstweb.dev/
 https://electric-sql.com/
+https://m2.material.io/design/navigation/understanding-navigation.html
