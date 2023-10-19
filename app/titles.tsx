@@ -1,4 +1,4 @@
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { loadUsername } from '../utils/datastore';
@@ -7,6 +7,7 @@ import { auth } from '../firebaseConfig';
 import { router } from 'expo-router';
 import { noteTitle } from '../utils/backend'
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TitleListPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
@@ -39,16 +40,29 @@ export default function TitleListPage() {
         direction={Directions.RIGHT}
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
-            <Link href='/' style={styles.cornerTopRight}>to record</Link>
-            <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
             <FlatList
                 data={titles}
                 keyExtractor={(title) => title.id.toString()}
-                renderItem={({ item }) => <Link href={`/notes/${item.id}`}>{item.title}</Link>}
+                renderItem={({ item }) => <NoteTitleElement note={item} />}
+                style={styles.notesView}
             />
+          <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
+            <Ionicons name="mic-outline" size={24} color="black"/>
+          </TouchableOpacity>
+          <Ionicons name="chevron-forward-outline" size={24} color="black" style={styles.bottomRight}/>
         </View>
       </FlingGestureHandler>
     );
+}
+
+const NoteTitleElement: React.FC<{ note: noteTitle }> = ({ note }) => {
+  return (
+    <TouchableOpacity
+    onPress={() => router.replace(`/notes/${note.id}`)}
+    style={styles.title}>
+      <Text>{note.title}</Text>
+    </TouchableOpacity> 
+  );
 }
 
 const styles = StyleSheet.create({
@@ -57,6 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    height:10,
   },
   cornerTopRight: {
     position: 'absolute',
@@ -69,6 +84,33 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
+    padding: 10,
+    backgroundColor: 'lightblue',
+  },
+  bottomRight: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    padding: 10,
+  },
+  notesView: {
+    position: 'absolute',
+    top: 32,
+    width: 350,
+    maxHeight: 650,
+  },
+  title: {
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: 'black',
+    height: 32,
+  },
+  notesIconStyle: {
+    position: 'absolute',
+    bottom: 16,
     padding: 10,
     backgroundColor: 'lightblue',
   }
