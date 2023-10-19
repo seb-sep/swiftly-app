@@ -2,10 +2,11 @@ import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { getNote } from "../../utils/backend"
 import { loadUsername } from "../../utils/datastore";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Link, router } from 'expo-router';
 import { auth } from "../../firebaseConfig";
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function NotePage() {
     const id = useLocalSearchParams().id;
@@ -42,9 +43,11 @@ export default function NotePage() {
         direction={Directions.RIGHT}
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
-          <Link href='/titles' style={styles.cornerTopRight}>to notes</Link>
-          <Link href='/signin' style={styles.cornerTopLeft}>to user</Link>
+          <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
           <Text>{content}</Text>
+          <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
+            <Ionicons name="mic-outline" size={24} color="black"/>
+          </TouchableOpacity>
         </View>
       </FlingGestureHandler>
     );
@@ -65,10 +68,15 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: 'lightblue',
   },
-  cornerTopLeft: {
+  topLeft: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: 16,
+    left: 16,
+    padding: 10,
+  },
+  notesIconStyle: {
+    position: 'absolute',
+    bottom: 16,
     padding: 10,
     backgroundColor: 'lightblue',
   }

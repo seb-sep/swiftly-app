@@ -111,13 +111,6 @@ bottomLeft: {
   left: 16,
   padding: 10,
 },
-bottomRight: {
-  position: 'absolute',
-  bottom: 0,
-  right: 0,
-  padding: 10,
-  backgroundColor: 'lightblue',
-},
 buttonOn: {
   color: 'blue',
 },
