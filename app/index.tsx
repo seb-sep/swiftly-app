@@ -76,7 +76,7 @@ export default function NoteTakingPage() {
       onHandlerStateChange={goToNotes}
       >
       <View style={styles.container}>
-          <TouchableOpacity onPress={() => router.replace('/user')} style={styles.userIconStyle}>
+          <TouchableOpacity onPress={() => router.replace('/signin')} style={styles.userIconStyle}>
             <Ionicons name="person-circle-outline" size={24} color="black"/>
           </TouchableOpacity>
           <Text>{noteText}</Text>

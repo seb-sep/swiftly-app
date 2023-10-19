@@ -11,9 +11,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function TitleListPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
-    const goBack = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+    const goToRecord = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
       if (event.nativeEvent.state === State.END) {
-        console.log('go back');
         router.replace('/');
       }
     };
@@ -38,7 +37,7 @@ export default function TitleListPage() {
     return (
       <FlingGestureHandler
         direction={Directions.RIGHT}
-        onHandlerStateChange={goBack}>
+        onHandlerStateChange={goToRecord}>
         <View style={styles.container}>
             <FlatList
                 data={titles}
