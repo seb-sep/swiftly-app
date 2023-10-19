@@ -4,6 +4,8 @@ import { Link, router } from 'expo-router';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { createAccount } from '../utils/backend';
+import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SignUpPage() {
 
@@ -18,35 +20,48 @@ export default function SignUpPage() {
                 createAccount(credential.user.email);
                 router.replace('/');
             } else {
-                setDebug('No user email found');
+                setDebug('account creation failed, try with a different email or password');
             }
         } catch (error) {
             setDebug(JSON.stringify(error));
         }
     }
+    
+    const goToSignIn = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+      if (event.nativeEvent.state === State.END) {
+        router.replace('/signin');
+      }
+    };
 
     return (
-        <View style={styles.container}>
-            <Link href='/signin' style={styles.cornerTopRight}>signin</Link>
-            <Text>sign up</Text>
-            <TextInput
-                value={username}
-                onChangeText={storeUsername}
-                placeholder='email here'
-                autoCapitalize='none'
-            />
-            <TextInput
-                value={password}
-                onChangeText={storePassword}
-                placeholder='password here'
-                autoCapitalize='none'
-            />
-            <Button
-                title={'submit'}
-                onPress={handleSignUp}
-            />
-            <Text>{debug}</Text>
-        </View>
+
+        <FlingGestureHandler
+            direction={Directions.RIGHT}
+            onHandlerStateChange={goToSignIn}
+        >
+            <View style={styles.container}>
+                <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
+                <Text>sign up</Text>
+                <TextInput
+                    value={username}
+                    onChangeText={storeUsername}
+                    placeholder='email here'
+                    autoCapitalize='none'
+                />
+                <TextInput
+                    value={password}
+                    onChangeText={storePassword}
+                    placeholder='password here'
+                    autoCapitalize='none'
+                />
+                <Button
+                    title={'submit'}
+                    onPress={handleSignUp}
+                />
+                <Text>{debug}</Text>
+                <Link href='/signin' style={styles.notesIconStyle}>sign in</Link>
+            </View>
+        </FlingGestureHandler>
     )
 }
 
@@ -65,6 +80,18 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         right: 0,
+        padding: 10,
+        backgroundColor: 'lightblue',
+    },
+    topLeft: {
+        position: 'absolute',
+        top: 16,
+        left: 16,
+        padding: 10,
+    },
+    notesIconStyle: {
+        position: 'absolute',
+        bottom: 16,
         padding: 10,
         backgroundColor: 'lightblue',
     }
