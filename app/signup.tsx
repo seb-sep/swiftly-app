@@ -40,7 +40,6 @@ export default function SignUpPage() {
             onHandlerStateChange={goToSignIn}
         >
             <View style={styles.container}>
-                <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
                 <Text>sign up</Text>
                 <TextInput
                     value={username}

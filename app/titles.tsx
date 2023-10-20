@@ -36,7 +36,7 @@ export default function TitleListPage() {
     }, []);   
     return (
       <FlingGestureHandler
-        direction={Directions.RIGHT}
+        direction={Directions.LEFT}
         onHandlerStateChange={goToRecord}>
         <View style={styles.container}>
             <FlatList
