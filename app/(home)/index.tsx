@@ -19,8 +19,13 @@ export default function NoteTakingPage() {
 
   const goToNotes = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
     if (event.nativeEvent.state === State.END) {
-      console.log('go to notes');
       router.replace('/titles');
+    }
+  };
+  
+  const goToUser = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+    if (event.nativeEvent.state === State.END) {
+      router.replace('/user');
     }
   };
 
@@ -75,10 +80,11 @@ export default function NoteTakingPage() {
       direction={Directions.RIGHT}
       onHandlerStateChange={goToNotes}
       >
+    <FlingGestureHandler
+      direction={Directions.LEFT}
+      onHandlerStateChange={goToUser}
+      >
       <View style={styles.container}>
-          <TouchableOpacity onPress={() => router.replace('/signin')} style={styles.userIconStyle}>
-            <Ionicons name="person-circle-outline" size={24} color="black"/>
-          </TouchableOpacity>
           <Text>{noteText}</Text>
           <Button
               title={recording ? 'Stop Recording' : 'Start Recording'}
@@ -88,8 +94,8 @@ export default function NoteTakingPage() {
             <Text style={fileUri ? styles.buttonOn : styles.buttonOff} >Transcribe Note</Text>
           </Pressable>
           <Text>{debug}</Text>
-          <Text>{`user: ${username}`}</Text>
       </View>
+    </FlingGestureHandler>
     </FlingGestureHandler>
   )
 }

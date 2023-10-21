@@ -43,7 +43,9 @@ export default function NotePage() {
         direction={Directions.RIGHT}
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
-          <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
+          <TouchableOpacity onPress={() => router.replace('/titles')} style={styles.topLeft}>
+            <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
+          </TouchableOpacity>
           <Text>{content}</Text>
           <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
             <Ionicons name="mic-outline" size={24} color="black"/>
