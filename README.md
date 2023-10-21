@@ -6,3 +6,4 @@ https://gluestack.io/
 https://localfirstweb.dev/
 https://electric-sql.com/
 https://m2.material.io/design/navigation/understanding-navigation.html
+https://medium.com/@fredrik.burmester/bottom-tabs-in-expo-router-with-authentication-acf7f7edee6d

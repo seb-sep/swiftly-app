@@ -3,9 +3,9 @@ import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { storeUsername } from '../utils/datastore';
+import { storeUsername } from '../../utils/datastore';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { auth } from '../firebaseConfig';
+import { auth } from '../../firebaseConfig';
 
 
 export default function App() {

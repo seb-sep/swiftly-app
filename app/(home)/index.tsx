@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { saveNote, transcribeAudio } from '../utils/backend'
-import { startRecording, stopRecording } from '../utils/record';
+import { saveNote, transcribeAudio } from '../../utils/backend'
+import { startRecording, stopRecording } from '../../utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
-import { auth } from '../firebaseConfig';
+import { auth } from '../../firebaseConfig';
 import 'react-native-gesture-handler';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
@@ -89,10 +89,6 @@ export default function NoteTakingPage() {
           </Pressable>
           <Text>{debug}</Text>
           <Text>{`user: ${username}`}</Text>
-          <TouchableOpacity onPress={() => router.replace('/titles')} style={styles.notesIconStyle} >
-            <Ionicons name="ios-clipboard-outline" size={24} color="black"/>
-          </TouchableOpacity>
-          <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.bottomLeft}/>
       </View>
     </FlingGestureHandler>
   )

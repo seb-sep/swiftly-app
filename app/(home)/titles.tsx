@@ -1,13 +1,11 @@
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { loadUsername } from '../utils/datastore';
-import { getTitles } from '../utils/backend';
-import { auth } from '../firebaseConfig';
+import { getTitles } from '../../utils/backend';
+import { auth } from '../../firebaseConfig';
 import { router } from 'expo-router';
-import { noteTitle } from '../utils/backend'
+import { noteTitle } from '../../utils/backend'
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function TitleListPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
@@ -45,10 +43,6 @@ export default function TitleListPage() {
                 renderItem={({ item }) => <NoteTitleElement note={item} />}
                 style={styles.notesView}
             />
-          <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
-            <Ionicons name="mic-outline" size={24} color="black"/>
-          </TouchableOpacity>
-          <Ionicons name="chevron-forward-outline" size={24} color="black" style={styles.bottomRight}/>
         </View>
       </FlingGestureHandler>
     );
@@ -57,8 +51,8 @@ export default function TitleListPage() {
 const NoteTitleElement: React.FC<{ note: noteTitle }> = ({ note }) => {
   return (
     <TouchableOpacity
-    onPress={() => router.replace(`/notes/${note.id}`)}
-    style={styles.title}>
+      onPress={() => router.replace(`/notes/${note.id}`)}
+      style={styles.title}>
       <Text>{note.title}</Text>
     </TouchableOpacity> 
   );
