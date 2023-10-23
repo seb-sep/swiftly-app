@@ -42,6 +42,7 @@ export default function App() {
         <Button
             title={'sign out'}
             onPress={() => auth.signOut()}
+            color={'mediumturquoise'}
         />
       </View> 
     </FlingGestureHandler>

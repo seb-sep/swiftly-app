@@ -44,11 +44,11 @@ export default function NotePage() {
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
           <TouchableOpacity onPress={() => router.replace('/titles')} style={styles.topLeft}>
-            <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
+            <Ionicons name="chevron-back-outline" size={24} color="gray" style={styles.topLeft}/>
           </TouchableOpacity>
           <Text>{content}</Text>
           <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
-            <Ionicons name="mic-outline" size={24} color="black"/>
+            <Ionicons name="mic-outline" size={32} color="mediumturquoise"/>
           </TouchableOpacity>
         </View>
       </FlingGestureHandler>
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     padding: 10,
-    backgroundColor: 'lightblue',
   }
 });
 

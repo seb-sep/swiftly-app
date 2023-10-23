@@ -56,6 +56,7 @@ export default function SignUpPage() {
                 <Button
                     title={'submit'}
                     onPress={handleSignUp}
+                    color={'mediumpurple'}
                 />
                 <Text>{debug}</Text>
                 <Link href='/signin' style={styles.notesIconStyle}>sign in</Link>
@@ -73,14 +74,14 @@ const styles = StyleSheet.create({
     box: {
       width: 100,
       height: 100,
-      backgroundColor: 'blue',
+      backgroundColor: 'mediumturquoise',
     },
     cornerTopRight: {
         position: 'absolute',
         top: 0,
         right: 0,
         padding: 10,
-        backgroundColor: 'lightblue',
+        backgroundColor: 'mediumturquoise',
     },
     topLeft: {
         position: 'absolute',
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 16,
         padding: 10,
-        backgroundColor: 'lightblue',
+        fontSize: 20,
+        color: 'mediumturquoise',
     }
   });

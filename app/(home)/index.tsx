@@ -89,6 +89,7 @@ export default function NoteTakingPage() {
           <Button
               title={recording ? 'Stop Recording' : 'Start Recording'}
               onPress={recordOnPress}
+              color={'mediumturquoise'}
           />
           <Pressable onPress={transcribeAndSave} disabled={!fileUri}>
             <Text style={fileUri ? styles.buttonOn : styles.buttonOff} >Transcribe Note</Text>
@@ -114,7 +115,7 @@ bottomLeft: {
   padding: 10,
 },
 buttonOn: {
-  color: 'blue',
+  color: 'mediumpurple',
 },
 buttonOff: {
   color: 'gray'

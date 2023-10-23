@@ -62,20 +62,21 @@ export default function SignInPage() {
                     <Button
                         title={'submit'}
                         onPress={handleSignIn}
+                        color={'mediumpurple'}
                     />
                     <Link href='/signup' style={styles.notesIconStyle}>sign up</Link>
                     <Text>{debug}</Text>
                 </View>
                 :
                 <View style={styles.container}>
-                    <Ionicons name="chevron-back-outline" size={24} color="black" style={styles.topLeft}/>
+                    <Ionicons name="chevron-back-outline" size={24} color="gray" style={styles.topLeft}/>
                     <Text>signed in as {currentUser}</Text>
                     <Button
                         title={'sign out'}
                         onPress={() => auth.signOut()}
                     />
                     <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
-                        <Ionicons name="mic-outline" size={24} color="black"/>
+                        <Ionicons name="mic-outline" size={24} color="mediumturquoise"/>
                     </TouchableOpacity>
                 </View>
             }
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
         top: 0,
         right: 0,
         padding: 10,
-        backgroundColor: 'lightblue',
+        backgroundColor: 'mediumturquoise',
     },
     topLeft: {
         position: 'absolute',
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 16,
         padding: 10,
-        backgroundColor: 'lightblue',
+        fontSize: 20,
+        color: 'mediumturquoise',
     }
 });

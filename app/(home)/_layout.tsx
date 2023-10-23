@@ -24,19 +24,19 @@ export default function AppLayout() {
         <Tabs.Screen
             name="titles"
             options={{
-                tabBarIcon: ({focused}) => <Ionicons name="ios-clipboard-outline" size={32} color={focused ? 'blue' : 'gray'}/>
+                tabBarIcon: ({focused}) => <Ionicons name="ios-clipboard-outline" size={32} color={focused ? 'mediumturquoise' : 'gray'}/>
             }}
         />
         <Tabs.Screen
             name="index"
             options={{
-                tabBarIcon: ({focused}) => <Ionicons name="mic-outline" size={32} color={focused ? 'blue' : 'gray'}/>
+                tabBarIcon: ({focused}) => <Ionicons name="mic-outline" size={32} color={focused ? 'mediumturquoise' : 'gray'}/>
             }}
         />
         <Tabs.Screen
             name="user"
             options={{
-                tabBarIcon: ({focused}) => <Ionicons name="person-circle-outline" size={32} color={focused ? 'blue' : 'gray'}/>
+                tabBarIcon: ({focused}) => <Ionicons name="person-circle-outline" size={32} color={focused ? 'mediumturquoise' : 'gray'}/>
             }}
         />
     </Tabs>
