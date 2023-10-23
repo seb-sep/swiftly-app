@@ -8,7 +8,7 @@
       "android",
       "web"
     ],
-    "version": "1.2.0",
+    "version": "1.0.3",
     "scheme": "myapp",
     "orientation": "portrait",
     "icon": "./assets/splash.png",
