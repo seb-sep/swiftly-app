@@ -66,7 +66,7 @@ export default function NoteTakingPage() {
       setNoteText(content);
       console.log("Response is " + content);
       setDebug('saving...');
-      await saveNote(username, "demo title", content);
+      await saveNote(username, content);
       setDebug('saved!');
     } catch (err) {
       console.log("There was an error: ", err);

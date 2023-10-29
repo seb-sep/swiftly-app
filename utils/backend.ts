@@ -2,20 +2,21 @@ import axios, { AxiosError, isAxiosError } from 'axios';
 
 import * as fs from 'expo-file-system';
 
-export async function saveNote(username: string, title: string, content: string): Promise<string> {
+export async function saveNote(username: string, content: string): Promise<void> {
     const url = getBackendURL();
 
     try {
         console.log("Trying to save note")
-        const response = await axios.post(`${url}/${username}/notes/save`, { title: title, content: content });
-        return response.data;
+        const response = await axios.post(`${url}/users/${username}/notes/save`, { content: content });
+        if (response.status >= 400) {
+            throw new Error(`Error saving note: ${response.data}`);
+        }
                     
     } catch (error) {
         if (isAxiosError(error)) {
             console.error(`Error saving note: ${JSON.stringify(error.response?.data)}`);
         }
     }
-    return ""
 
 }
 
@@ -23,7 +24,7 @@ export async function getNote(username: string, id: string): Promise<string> {
     const url = getBackendURL();
 
     try {
-        const response = await axios.get(`${url}/${username}/notes/${id}`);
+        const response = await axios.get(`${url}/users/${username}/notes/${id}`);
         console.log(response.data.content);
         return response.data.content as string;
     } catch (error) {
@@ -41,7 +42,7 @@ export async function getTitles(username: string): Promise<noteTitle[]> {
     const url = getBackendURL();
 
     try {
-        const response = await axios.get(`${url}/${username}/notes`);
+        const response = await axios.get(`${url}/users/${username}/notes`);
         return response.data as noteTitle[];
     } catch (error) {
         console.error(error);
@@ -73,7 +74,7 @@ export async function createAccount(email: string): Promise<boolean> {
     const url = getBackendURL();
 
     try {
-        const response = await axios.post(`${url}/add`, { name: email });
+        const response = await axios.post(`${url}/users/add`, { name: email });
         if (response.status === 200) {
             return true;
         } else {
@@ -93,26 +94,3 @@ function getBackendURL(): string {
     }
     return url
 }
-
-
-/*
-async function transcribeAudio(path: string) {
-
-    const apiKey = process.env.EXPO_PUBLIC_OPENAI_KEY;
-    if (!apiKey) {
-        throw new Error("API key not found.")
-    }
-
-    const config = new Configuration({
-        apiKey: apiKey,
-    });
-    const openai = new OpenAIApi(config);
-
-
-    const transcription = await openai.createTranscription(
-        new File(new Blob([""]), "temp"),
-        "whisper-1"
-    );
-    console.log(transcription);
-}
-*/
