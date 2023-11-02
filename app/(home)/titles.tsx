@@ -24,7 +24,7 @@ export default function TitleListPage() {
           setTitles(titles)
         })
         .catch(error => {
-          console.error(error);
+          console.error(`Error trying to get titles: ${error}`);
         });
       } else {
         console.error('no user email found');

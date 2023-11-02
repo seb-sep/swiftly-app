@@ -45,7 +45,9 @@ export async function getTitles(username: string): Promise<noteTitle[]> {
         const response = await axios.get(`${url}/users/${username}/notes`);
         return response.data as noteTitle[];
     } catch (error) {
-        console.error(error);
+        if (isAxiosError(error)) {
+            console.error(`Error saving note: ${JSON.stringify(error.response?.data)}`);
+        }
         throw error;
     }
 }
