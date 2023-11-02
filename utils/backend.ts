@@ -64,7 +64,27 @@ export async function transcribeAudio(fileUri: string): Promise<string> {
             httpMethod: 'POST',
             uploadType: fs.FileSystemUploadType.MULTIPART
             });
-        return result.body.split('"').join('');
+        return JSON.parse(result.body).text;
+    } catch (error) {
+        console.log("Error in audio transcription: ", error);
+        return JSON.stringify(error);
+    }
+
+}
+
+export async function queryNotesWithVoice(username: string, fileUri: string): Promise<string> {
+    const url = getBackendURL();
+    try {
+        const result = await fs.uploadAsync(`${url}/users/${username}/notes/chat`, fileUri, {
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": 'multipart/form-data'
+            },
+            fieldName: 'speech_bytes',
+            httpMethod: 'POST',
+            uploadType: fs.FileSystemUploadType.MULTIPART
+            });
+        return JSON.parse(result.body).text;
     } catch (error) {
         console.log("Error in audio transcription: ", error);
         return JSON.stringify(error);
