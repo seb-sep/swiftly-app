@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { saveNote, transcribeAudio, queryNotesWithVoice, ping } from '../../utils/backend'
 import { startRecording, stopRecording } from '../../utils/record';
@@ -9,9 +9,25 @@ import 'react-native-gesture-handler';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
+import TimerProgressBar from '../../components/timer';
+
+enum NoteTakingState {
+  RECORDING_NOTE,
+  RECORDING_CHAT,
+  QUERYING,
+  IDLE
+}
+
+const stateMessage: { [key in NoteTakingState]: string } = {
+  [NoteTakingState.RECORDING_NOTE]: "what's on your mind?",
+  [NoteTakingState.RECORDING_CHAT]: 'what do you want to know?',
+  [NoteTakingState.QUERYING]: 'hold on a sec...',
+  [NoteTakingState.IDLE]: 'think swiftly.',
+};
 
 export default function NoteTakingPage() {
-  const [noteText, setNoteText] = useState("what's on your mind?");
+  const [state, setState] = useState(NoteTakingState.IDLE);
+  const [noteText, setNoteText] = useState('');
   const [username, setUsername] = useState('');
   const [recording, setRecording] = useState<Audio.Recording>();
   const [fileUri, setFileUri] = useState('');
@@ -39,12 +55,13 @@ export default function NoteTakingPage() {
     });
   });
 
-  async function recordOnPress() {
+  async function recordOnPress(actionType: NoteTakingState.RECORDING_CHAT | NoteTakingState.RECORDING_NOTE) {
     ping(); // warm up the serverless backend to avoid cold start
     try {
       if (!recording) {
         const recording = await startRecording();
         setRecording(recording);
+        setState(actionType);
       }
     } catch (err) {
       console.error(err);
@@ -53,11 +70,12 @@ export default function NoteTakingPage() {
   }
 
   async function transcribeAndSave() {
-    if (recording) {
+    console.log(state);
+    if (state === NoteTakingState.RECORDING_NOTE && recording) {
       const fileUri = await stopRecording(recording);
       setRecording(undefined);
       setFileUri(fileUri);
-
+      setState(NoteTakingState.QUERYING);
       setDebug('transcribing...');
       if (!fileUri) {
         setDebug('no audio recorded');
@@ -77,15 +95,16 @@ export default function NoteTakingPage() {
 
     setFileUri('');
   }
+
+  setState(NoteTakingState.IDLE);
 }
 
 async function queryNotes() {
-  if (recording) {
+  if (state === NoteTakingState.RECORDING_CHAT && recording) {
     const fileUri = await stopRecording(recording);
     setRecording(undefined);
     setFileUri(fileUri);
-    setDebug('querying...');
-
+    setState(NoteTakingState.QUERYING);
     if (!fileUri) {
       setDebug('no audio recorded');
       return;
@@ -99,33 +118,50 @@ async function queryNotes() {
       setDebug(JSON.stringify(err));
     }
 
+    setState(NoteTakingState.IDLE);
+
     setDebug('');
     setFileUri('');
   }
 }
 
 
+
   return (
     <FlingGestureHandler
       direction={Directions.RIGHT}
       onHandlerStateChange={goToNotes}
-      >
+    >
     <FlingGestureHandler
       direction={Directions.LEFT}
       onHandlerStateChange={goToUser}
-      >
+    >
       <View style={styles.container}>
           <View style={styles.displayContainer}>
+              <Text style={{fontSize: 24, fontWeight: 'bold'}}>{stateMessage[state]}</Text>
               <Text style={{fontSize: 16}}>{noteText}</Text>
-              <Text style={{fontSize: 16}}>{debug}</Text>
+              <TimerProgressBar 
+                onTimerComplete={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : queryNotes} 
+                color='mediumturquoise' 
+                time={30} 
+                active={state === NoteTakingState.RECORDING_CHAT || state == NoteTakingState.RECORDING_NOTE}
+              />
           </View>
           <View style={styles.buttonContainer}>
-            <Pressable style={[styles.button, {backgroundColor: 'mediumseagreen'}]} onPress={recording ? transcribeAndSave : recordOnPress}>
-              <Ionicons name={!recording ? "mic-outline" : "stop"} size={48} color="white" />
+            <Pressable 
+              disabled={state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_CHAT}
+              style={[styles.button, {backgroundColor: 'mediumseagreen'}]} 
+              onPress={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : () => recordOnPress(NoteTakingState.RECORDING_NOTE)}
+            >
+              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE? "mic-outline" : "stop"} size={48} color="white" />
               <Text style={{color: 'white', fontSize: 20}}>record note</Text>
             </Pressable>
-            <Pressable style={[styles.button, {backgroundColor: 'mediumpurple'}]}onPress={recording ? queryNotes : recordOnPress}>
-              <Ionicons name={!recording ? "search" : "stop"} size={48} color="white" />
+            <Pressable 
+              disabled={state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_NOTE}
+              style={[styles.button, {backgroundColor: 'mediumpurple'}]} 
+              onPress={state === NoteTakingState.RECORDING_CHAT ? queryNotes : () => recordOnPress(NoteTakingState.RECORDING_CHAT)}
+            >
+              <Ionicons name={state !== NoteTakingState.RECORDING_CHAT? "search" : "stop"} size={48} color="white" />
               <Text style={{color: 'white', fontSize: 20}}>query note</Text>
             </Pressable>
           </View>
@@ -155,6 +191,7 @@ buttonContainer: {
   flexDirection: 'row',
   justifyContent: 'space-evenly',
   alignItems: 'center',
+  paddingBottom: 24,
 },
 button: {
   alignItems: 'center',
