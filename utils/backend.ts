@@ -116,3 +116,15 @@ function getBackendURL(): string {
     }
     return url
 }
+
+/*
+Ping the backend without waiting for the response to warm it up
+*/
+export function ping(): void {
+    const url = getBackendURL();
+    axios.get(`${url}/`).then((response) => {
+        console.log(response.data);
+    }).catch((error) => {
+        console.log(error);
+    })
+}

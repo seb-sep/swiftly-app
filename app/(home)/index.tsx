@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { saveNote, transcribeAudio, queryNotesWithVoice } from '../../utils/backend'
+import { saveNote, transcribeAudio, queryNotesWithVoice, ping } from '../../utils/backend'
 import { startRecording, stopRecording } from '../../utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
@@ -40,6 +40,7 @@ export default function NoteTakingPage() {
   });
 
   async function recordOnPress() {
+    ping(); // warm up the serverless backend to avoid cold start
     try {
       if (!recording) {
         const recording = await startRecording();
