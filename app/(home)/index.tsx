@@ -111,6 +111,7 @@ async function queryNotes() {
     }
 
     try {
+      console.log("Querying notes with voice");
       const content = await queryNotesWithVoice(username, fileUri);
       setNoteText(content);
     } catch (err) {
@@ -150,19 +151,19 @@ async function queryNotes() {
           <View style={styles.buttonContainer}>
             <Pressable 
               disabled={state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_CHAT}
-              style={[styles.button, {backgroundColor: 'mediumseagreen'}]} 
+              style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_CHAT ? 'gray' : 'mediumseagreen'}]} 
               onPress={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : () => recordOnPress(NoteTakingState.RECORDING_NOTE)}
             >
-              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE? "mic-outline" : "stop"} size={48} color="white" />
-              <Text style={{color: 'white', fontSize: 20}}>record note</Text>
+              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "stop"} size={48} color="white" />
+              <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_NOTE ? 'record note' : 'stop recording'}</Text>
             </Pressable>
             <Pressable 
               disabled={state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_NOTE}
-              style={[styles.button, {backgroundColor: 'mediumpurple'}]} 
+              style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_NOTE ? 'gray' : 'mediumpurple'}]} 
               onPress={state === NoteTakingState.RECORDING_CHAT ? queryNotes : () => recordOnPress(NoteTakingState.RECORDING_CHAT)}
             >
               <Ionicons name={state !== NoteTakingState.RECORDING_CHAT? "search" : "stop"} size={48} color="white" />
-              <Text style={{color: 'white', fontSize: 20}}>query note</Text>
+              <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_CHAT ? 'query notes' : 'stop recording'}</Text>
             </Pressable>
           </View>
       </View>
