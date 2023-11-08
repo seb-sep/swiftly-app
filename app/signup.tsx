@@ -17,12 +17,17 @@ export default function SignUpPage() {
         try {
             const credential = await createUserWithEmailAndPassword(auth, username, password);
             if (credential?.user?.email) {
-                createAccount(credential.user.email);
+                const success = await createAccount(credential.user.email);
+                if (!success) {
+                    setDebug('account creation failed, try with a different email or password');
+                    return;
+                }
                 router.replace('/');
             } else {
                 setDebug('account creation failed, try with a different email or password');
             }
         } catch (error) {
+            console.log(JSON.stringify(error, null, 2));
             setDebug(JSON.stringify(error));
         }
     }
