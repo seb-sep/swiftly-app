@@ -22,7 +22,7 @@ export default function AppLayout() {
         }}
     >
         <Tabs.Screen
-            name="titles"
+            name="notes"
             options={{
                 tabBarIcon: ({focused}) => <Ionicons name="ios-clipboard-outline" size={32} color={focused ? 'mediumturquoise' : 'gray'}/>
             }}

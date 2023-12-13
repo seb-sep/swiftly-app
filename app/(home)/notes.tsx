@@ -1,5 +1,4 @@
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { getTitles } from '../../utils/backend';
 import { auth } from '../../firebaseConfig';
@@ -7,7 +6,7 @@ import { router } from 'expo-router';
 import { noteTitle } from '../../utils/backend'
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 
-export default function TitleListPage() {
+export default function NotesPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
     const goToRecord = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
       if (event.nativeEvent.state === State.END) {
@@ -53,9 +52,15 @@ const NoteTitleElement: React.FC<{ note: noteTitle }> = ({ note }) => {
     <TouchableOpacity
       onPress={() => router.replace(`/notes/${note.id}`)}
       style={styles.title}>
-      <Text>{note.title}</Text>
+      <Text style={styles.titleText}>{note.title}</Text>
+      <Text style={styles.dateText}>{parseString(note.created)}</Text>
     </TouchableOpacity> 
   );
+}
+
+function parseString(str: string): string {
+  return new Date(Date.parse(str)).toDateString();
+
 }
 
 const styles = StyleSheet.create({
@@ -66,26 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height:10,
   },
-  cornerTopRight: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 10,
-    backgroundColor: 'lightblue',
-  },
-  cornerTopLeft: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: 10,
-    backgroundColor: 'lightblue',
-  },
-  bottomRight: {
-    position: 'absolute',
-    bottom: 16,
-    right: 16,
-    padding: 10,
-  },
+  
   notesView: {
     position: 'absolute',
     top: 32,
@@ -99,13 +85,18 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: 'black',
-    height: 32,
+    height: 48,
   },
-  notesIconStyle: {
-    position: 'absolute',
-    bottom: 16,
-    padding: 10,
-    backgroundColor: 'lightblue',
-  }
+  titleText: {
+    fontSize: 16,
+    paddingHorizontal: 8,
+    height: 24,
+  },
+  dateText: {
+    fontSize: 12,
+    paddingHorizontal: 8,
+    height: 24,
+    color: 'gray',
+  },
 });
 

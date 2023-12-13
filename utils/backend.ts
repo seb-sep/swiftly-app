@@ -36,6 +36,7 @@ export async function getNote(username: string, id: string): Promise<string> {
 export type noteTitle = {
     id: number
     title: string
+    created: string
 }
 
 export async function getTitles(username: string): Promise<noteTitle[]> {
@@ -46,7 +47,7 @@ export async function getTitles(username: string): Promise<noteTitle[]> {
         return response.data as noteTitle[];
     } catch (error) {
         if (isAxiosError(error)) {
-            console.error(`Error saving note: ${JSON.stringify(error.response?.data)}`);
+            console.error(`Error getting titles: ${JSON.stringify(error.response)}`);
         }
         throw error;
     }

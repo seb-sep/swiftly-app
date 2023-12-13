@@ -15,14 +15,14 @@ export default function NotePage() {
     const goBack = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
       if (event.nativeEvent.state === State.END) {
         console.log('go back');
-        router.replace('/titles');
+        router.replace('/notes');
       }
     };
 
     useEffect(() => {
       if (typeof id !== 'string') {
         console.error('no id found');
-        router.replace('/titles');
+        router.replace('/notes');
       } else {
         const user = auth.currentUser;
         //only works if user has email
@@ -43,7 +43,7 @@ export default function NotePage() {
         direction={Directions.RIGHT}
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
-          <TouchableOpacity onPress={() => router.replace('/titles')} style={styles.topLeft}>
+          <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.topLeft}>
             <Ionicons name="chevron-back-outline" size={24} color="gray" style={styles.topLeft}/>
           </TouchableOpacity>
           <Text>{content}</Text>
