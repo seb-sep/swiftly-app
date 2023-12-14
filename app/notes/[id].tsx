@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { getNote } from "../../utils/backend"
+import { getNote, deleteNote } from "../../utils/backend"
 import { loadUsername } from "../../utils/datastore";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Link, router } from 'expo-router';
@@ -11,6 +11,8 @@ import { Ionicons } from '@expo/vector-icons';
 export default function NotePage() {
     const id = useLocalSearchParams().id;
     const [content, setContent] = useState('');
+    const [email, setEmail] = useState('');
+    const [noteId, setId] = useState('');
 
     const goBack = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
       if (event.nativeEvent.state === State.END) {
@@ -27,10 +29,11 @@ export default function NotePage() {
         const user = auth.currentUser;
         //only works if user has email
         if (user !== null && user.email) {
-
           getNote(user.email, id).then((note) => {
             setContent(note);
           });
+          setId(id);
+          setEmail(user.email);
         } else {
           console.error('no user email found');
           router.replace('/signin');
@@ -38,17 +41,26 @@ export default function NotePage() {
       }
     }, []);   
 
+    const onDelete = async () => {
+      setContent('deleting note...');
+      await deleteNote(email, noteId);
+      router.replace('/notes');
+    }
+
     return (
       <FlingGestureHandler
         direction={Directions.RIGHT}
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
-          <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.topLeft}>
-            <Ionicons name="chevron-back-outline" size={24} color="gray" style={styles.topLeft}/>
+          <TouchableOpacity onPress={onDelete} style={styles.topLeft}>
+            <Ionicons name="trash-outline" size={24} color="indianred" />
           </TouchableOpacity>
-          <Text>{content}</Text>
-          <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
-            <Ionicons name="mic-outline" size={32} color="mediumturquoise"/>
+          <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.topRight}>
+            <Ionicons name="star-outline" size={24} color="mediumturquoise" />
+          </TouchableOpacity>
+          <Text style={styles.noteText}>{content}</Text>
+          <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.bottom} >
+            <Ionicons name="chevron-back-outline" size={24} color="gray" />
           </TouchableOpacity>
         </View>
       </FlingGestureHandler>
@@ -63,23 +75,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cornerTopRight: {
+  topRight: {
     position: 'absolute',
-    top: 0,
-    right: 0,
-    padding: 10,
-    backgroundColor: 'lightblue',
+    top: 32,
+    right: 48,
+    padding: 8,
   },
   topLeft: {
     position: 'absolute',
-    top: 16,
-    left: 16,
-    padding: 10,
+    top: 32,
+    left: 48,
+    padding: 8,
   },
-  notesIconStyle: {
+  bottom: {
     position: 'absolute',
     bottom: 16,
-    padding: 10,
-  }
+    padding: 8,
+  },
+  noteText: {
+    fontSize: 20,
+    fontWeight: '500',
+    lineHeight: 24,
+    padding: 16,
+  },
 });
 

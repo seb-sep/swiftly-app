@@ -33,6 +33,21 @@ export async function getNote(username: string, id: string): Promise<string> {
     }
 }
 
+export async function deleteNote(username: string, id: string): Promise<void> {
+    const url = getBackendURL();
+
+    try {
+        const response = await axios.delete(`${url}/users/${username}/notes/${id}`);
+        if (response.status >= 400) {
+            throw new Error(`Error deleting note: ${response.data}`);
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            console.error(`Error deleting note: ${JSON.stringify(error.response?.data)}`);
+        }
+    }
+}
+
 export type noteTitle = {
     id: number
     title: string
