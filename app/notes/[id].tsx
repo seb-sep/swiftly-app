@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { getNote, deleteNote, Note } from "../../utils/backend"
+import { getNote, deleteNote, setNoteFavorite, Note } from "../../utils/backend"
 import { loadUsername } from "../../utils/datastore";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Link, router } from 'expo-router';
@@ -52,6 +52,16 @@ export default function NotePage() {
       router.replace('/notes');
     }
 
+    const toggleFavorite = async () => {
+      setNoteFavorite(email, noteId, !note?.favorite);
+      setNote((prevNote) => {
+        return {
+          ...prevNote,
+          favorite: !prevNote?.favorite,
+        }
+      })
+    }
+
     return (
       <FlingGestureHandler
         direction={Directions.RIGHT}
@@ -60,8 +70,8 @@ export default function NotePage() {
           <TouchableOpacity onPress={onDelete} style={styles.topLeft}>
             <Ionicons name="trash-outline" size={24} color="indianred" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.topRight}>
-            <Ionicons name="star-outline" size={24} color="mediumturquoise" />
+          <TouchableOpacity onPress={toggleFavorite} style={styles.topRight}>
+            <Ionicons name={note?.favorite ? "star" : "star-outline"} size={24} color="mediumturquoise" />
           </TouchableOpacity>
           <Text style={styles.noteText}>{note?.content}</Text>
           <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.bottom} >

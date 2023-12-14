@@ -33,8 +33,7 @@ export async function getNote(username: string, id: string): Promise<Note> {
 
     try {
         const response = await axios.get(`${url}/users/${username}/notes/${id}`);
-        console.log(response.data.content);
-        return response.data.content as Note;
+        return response.data as Note;
     } catch (error) {
         console.error(error);
         throw(error);
@@ -52,6 +51,21 @@ export async function deleteNote(username: string, id: string): Promise<void> {
     } catch (error) {
         if (isAxiosError(error)) {
             console.error(`Error deleting note: ${JSON.stringify(error.response?.data)}`);
+        }
+    }
+}
+
+export async function setNoteFavorite(username: string, id: string, favorite: boolean): Promise<void> {
+    const url = getBackendURL();
+
+    try {
+        const response = await axios.patch(`${url}/users/${username}/notes/${id}/favorite`, { favorite: favorite });
+        if (response.status >= 400) {
+            throw new Error(`Error setting note favorite: ${response.data}`);
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            console.error(`Error setting note favorite: ${JSON.stringify(error.response?.data)}`);
         }
     }
 }
