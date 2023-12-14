@@ -1,20 +1,27 @@
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { getTitles } from '../../utils/backend';
 import { auth } from '../../firebaseConfig';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { noteTitle } from '../../utils/backend'
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+import { TitleList } from '../../components/titleList';
+
+enum TabState {
+  RECENT,
+  FAVORITES,
+}
 
 export default function NotesPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
+    const [tabState, setTabState] = useState(TabState.RECENT);
     const goToRecord = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
       if (event.nativeEvent.state === State.END) {
         router.replace('/');
       }
     };
  
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
       const user = auth.currentUser;
 
       //only works if user has email
@@ -30,53 +37,76 @@ export default function NotesPage() {
         router.replace('/signin');
       }
 
-    }, []);   
+    }, []));   
+
+    const displays = {
+      [TabState.RECENT]: <TitleList titles={titles} />,
+      [TabState.FAVORITES]: <TitleList titles={titles.filter((note) => note.favorite)} />,  
+    };
+
     return (
       <FlingGestureHandler
         direction={Directions.LEFT}
         onHandlerStateChange={goToRecord}>
-        <View style={styles.container}>
-            <FlatList
-                data={titles}
-                keyExtractor={(title) => title.id.toString()}
-                renderItem={({ item }) => <NoteTitleElement note={item} />}
-                style={styles.notesView}
-            />
-        </View>
+          <View style={styles.container}>
+            <View style={styles.tabBar}>
+              <TouchableOpacity
+                onPress={() => setTabState(TabState.RECENT)}
+                style={styles.tab}>
+                <Text style={[styles.tabText, tabState == TabState.RECENT && {color: "mediumturquoise", textDecorationLine: 'underline'}]}>Recent</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setTabState(TabState.FAVORITES)}
+                style={styles.tab}>
+                <Text style={[styles.tabText, tabState == TabState.FAVORITES && {color: "mediumturquoise", textDecorationLine: 'underline'}]}>Favorites</Text>
+              </TouchableOpacity>
+              </View>
+              <View style={styles.titleContainer}>
+                {displays[tabState]}
+              </View>
+          </View>
       </FlingGestureHandler>
     );
-}
-
-const NoteTitleElement: React.FC<{ note: noteTitle }> = ({ note }) => {
-  return (
-    <TouchableOpacity
-      onPress={() => router.replace(`/notes/${note.id}`)}
-      style={styles.title}>
-      <Text style={styles.titleText}>{note.title}</Text>
-      <Text style={styles.dateText}>{parseString(note.created)}</Text>
-    </TouchableOpacity> 
-  );
-}
-
-function parseString(str: string): string {
-  return new Date(Date.parse(str)).toDateString();
-
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     height:10,
   },
-  
-  notesView: {
-    position: 'absolute',
-    top: 32,
+  tabBar: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    maxHeight: 56,
+    padding: 16,
+    // borderBottomWidth: 1,
+    // borderBottomColor: 'gray',
+    // borderWidth: 1,
+    // borderColor: 'green',
+  },
+  tab: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 32,
+    paddingTop: 8,
+  },
+  tabText: {
+    textAlign: 'center',
+    fontSize: 16,
+    height: 32,
+  },
+  titleContainer: {
+    // borderWidth: 1,
+    // borderColor: 'purple',
     width: 350,
-    maxHeight: 650,
+    height: 650,
   },
   title: {
     flex: 1,
@@ -95,8 +125,9 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 12,
     paddingHorizontal: 8,
-    height: 24,
+    height: 16,
     color: 'gray',
   },
 });
+
 

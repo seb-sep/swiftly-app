@@ -37,6 +37,7 @@ export type noteTitle = {
     id: number
     title: string
     created: string
+    favorite: boolean
 }
 
 export async function getTitles(username: string): Promise<noteTitle[]> {
