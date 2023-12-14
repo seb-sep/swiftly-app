@@ -7,7 +7,7 @@ import { Link, router, useFocusEffect } from 'expo-router';
 import { auth } from '../../firebaseConfig';
 import 'react-native-gesture-handler';
 import { onAuthStateChanged } from 'firebase/auth';
-import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, ScrollView, State } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import TimerProgressBar from '../../components/timer';
 
@@ -140,7 +140,9 @@ async function queryNotes() {
       <View style={styles.container}>
           <View style={styles.displayContainer}>
               <Text style={{fontSize: 24, fontWeight: 'bold'}}>{stateMessage[state]}</Text>
-              <Text style={{fontSize: 16}}>{noteText}</Text>
+              <ScrollView style={styles.noteContainer}>
+                <Text style={styles.noteText}>{noteText}</Text>
+              </ScrollView>
               <TimerProgressBar 
                 onTimerComplete={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : queryNotes} 
                 color='mediumturquoise' 
@@ -186,6 +188,15 @@ displayContainer: {
   flexDirection: 'column',
   justifyContent: 'space-evenly',
   alignItems: 'center',
+},
+noteText: {
+  fontSize: 16,
+  fontWeight: '500',
+},
+noteContainer: {
+  maxHeight: 400,
+  // borderWidth: 1,
+  paddingHorizontal: 8,
 },
 buttonContainer: {
   height: 200,
