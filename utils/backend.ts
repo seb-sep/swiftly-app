@@ -20,13 +20,21 @@ export async function saveNote(username: string, content: string): Promise<void>
 
 }
 
-export async function getNote(username: string, id: string): Promise<string> {
+export type Note = {
+    id: number
+    title: string
+    content: string
+    created: string
+    favorite: boolean
+}
+
+export async function getNote(username: string, id: string): Promise<Note> {
     const url = getBackendURL();
 
     try {
         const response = await axios.get(`${url}/users/${username}/notes/${id}`);
         console.log(response.data.content);
-        return response.data.content as string;
+        return response.data.content as Note;
     } catch (error) {
         console.error(error);
         throw(error);

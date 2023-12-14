@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { getNote, deleteNote } from "../../utils/backend"
+import { getNote, deleteNote, Note } from "../../utils/backend"
 import { loadUsername } from "../../utils/datastore";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Link, router } from 'expo-router';
@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function NotePage() {
     const id = useLocalSearchParams().id;
-    const [content, setContent] = useState('');
+    const [note, setNote] = useState<Partial<Note>>();
     const [email, setEmail] = useState('');
     const [noteId, setId] = useState('');
 
@@ -30,7 +30,7 @@ export default function NotePage() {
         //only works if user has email
         if (user !== null && user.email) {
           getNote(user.email, id).then((note) => {
-            setContent(note);
+            setNote(note);
           });
           setId(id);
           setEmail(user.email);
@@ -42,7 +42,12 @@ export default function NotePage() {
     }, []);   
 
     const onDelete = async () => {
-      setContent('deleting note...');
+      setNote((prevNote) => {
+        return {
+          ...prevNote,
+          content: 'deleting note...',
+        }
+      })
       await deleteNote(email, noteId);
       router.replace('/notes');
     }
@@ -58,7 +63,7 @@ export default function NotePage() {
           <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.topRight}>
             <Ionicons name="star-outline" size={24} color="mediumturquoise" />
           </TouchableOpacity>
-          <Text style={styles.noteText}>{content}</Text>
+          <Text style={styles.noteText}>{note?.content}</Text>
           <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.bottom} >
             <Ionicons name="chevron-back-outline" size={24} color="gray" />
           </TouchableOpacity>
