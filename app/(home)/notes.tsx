@@ -9,11 +9,13 @@ import { TitleList } from '../../components/titleList';
 
 enum TabState {
   RECENT,
+  OLDEST,
   FAVORITES,
 }
 
 export default function NotesPage() {
     const [titles, setTitles] = useState<noteTitle[]>([])
+    const [displayTitles, setDisplayTitles] = useState<noteTitle[]>([])
     const [tabState, setTabState] = useState(TabState.RECENT);
     const goToRecord = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
       if (event.nativeEvent.state === State.END) {
@@ -27,7 +29,8 @@ export default function NotesPage() {
       //only works if user has email
       if (user !== null && user.email) {
         getTitles(user.email).then((titles) => {
-          setTitles(titles)
+          setTitles(titles);
+          setDisplayTitles(titles);
         })
         .catch(error => {
           console.error(`Error trying to get titles: ${error}`);
@@ -39,10 +42,28 @@ export default function NotesPage() {
 
     }, []));   
 
-    const displays = {
-      [TabState.RECENT]: <TitleList titles={titles} />,
-      [TabState.FAVORITES]: <TitleList titles={titles.filter((note) => note.favorite)} />,  
-    };
+    useEffect(() => {
+      console.log(`tab state: ${tabState}`);
+      let sortedTitles = [...titles];
+      switch (tabState) {
+        case TabState.RECENT:
+          sortedTitles.sort((a, b) => b.created.getTime() - a.created.getTime());
+          break;
+        case TabState.OLDEST:
+          sortedTitles.sort((a, b) => a.created.getTime() - b.created.getTime());
+          break;
+        case TabState.FAVORITES:
+          sortedTitles = titles.filter((note) => note.favorite);
+          break;
+      }
+      setDisplayTitles(sortedTitles);
+    }, [tabState]);
+
+    // const displays = {
+    //   [TabState.RECENT]: <TitleList titles={titles.sort((a, b) => b.created.getTime() - a.created.getTime())} />,
+    //   [TabState.OLDEST]: <TitleList titles={titles.sort((a, b) => a.created.getTime() - b.created.getTime())} />,
+    //   [TabState.FAVORITES]: <TitleList titles={titles.filter((note) => note.favorite)} />,  
+    // };
 
     return (
       <FlingGestureHandler
@@ -56,13 +77,18 @@ export default function NotesPage() {
                 <Text style={[styles.tabText, tabState == TabState.RECENT && {color: "mediumturquoise", textDecorationLine: 'underline'}]}>Recent</Text>
               </TouchableOpacity>
               <TouchableOpacity
+                  onPress={() => setTabState(TabState.OLDEST)}
+                  style={styles.tab}>
+                <Text style={[styles.tabText, tabState == TabState.OLDEST && {color: "mediumturquoise", textDecorationLine: 'underline'}]}>Oldest</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 onPress={() => setTabState(TabState.FAVORITES)}
                 style={styles.tab}>
                 <Text style={[styles.tabText, tabState == TabState.FAVORITES && {color: "mediumturquoise", textDecorationLine: 'underline'}]}>Favorites</Text>
               </TouchableOpacity>
               </View>
               <View style={styles.titleContainer}>
-                {displays[tabState]}
+                <TitleList titles={displayTitles}/>
               </View>
           </View>
       </FlingGestureHandler>

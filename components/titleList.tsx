@@ -25,14 +25,11 @@ const NoteTitleElement: React.FC<{ note: noteTitle }> = ({ note }) => {
       onPress={() => router.replace(`/notes/${note.id}`)}
       style={styles.title}>
       <Text style={styles.titleText}>{trimTitle(note.title)}</Text>
-      <Text style={styles.dateText}>{parseString(note.created)}</Text>
+      <Text style={styles.dateText}>{note.created.toDateString()}</Text>
     </TouchableOpacity> 
   );
 }
 
-function parseString(str: string): string {
-  return new Date(Date.parse(str)).toDateString();
-}
 
 function trimTitle(title: string): string {
   return title.length > MAX_TITLE_CHARS ? title.substring(0, MAX_TITLE_CHARS) + '...' : title;

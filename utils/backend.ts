@@ -73,7 +73,7 @@ export async function setNoteFavorite(username: string, id: string, favorite: bo
 export type noteTitle = {
     id: number
     title: string
-    created: string
+    created: Date
     favorite: boolean
 }
 
@@ -82,6 +82,9 @@ export async function getTitles(username: string): Promise<noteTitle[]> {
 
     try {
         const response = await axios.get(`${url}/users/${username}/notes`);
+        response.data.forEach((note: any) => {
+            note.created = new Date(note.created);
+        });
         return response.data as noteTitle[];
     } catch (error) {
         if (isAxiosError(error)) {
