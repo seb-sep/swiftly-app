@@ -1,13 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { storeUsername } from '../../utils/datastore';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import { auth } from '../../firebaseConfig';
-import { Ionicons } from '@expo/vector-icons';
 import { onAuthStateChanged } from 'firebase/auth';
+import { Linking } from 'react-native';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 
 export default function App() {
@@ -44,12 +40,24 @@ export default function App() {
             onPress={() => auth.signOut()}
             color={'mediumturquoise'}
         />
+        <TouchableOpacity onPress={() => openURL(reviewUrl)}>
+          <Text style={{color: 'mediumturquoise'}}>give your feedback</Text>
+        </TouchableOpacity>
       </View> 
     </FlingGestureHandler>
   );
 }
 
+const reviewUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfS87SeXGlUjJ3J-k6a0k2q4usKUtCiK3g-EDkISsn8j2V2dQ/viewform?usp=sf_link';
 
+const openURL = async (url: string) => {
+  const supported = await Linking.canOpenURL(url);
+  if (supported) {
+    await Linking.openURL(url);
+  } else {
+    console.log(`Don't know how to open URL: ${url}`);
+  }
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
