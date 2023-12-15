@@ -164,7 +164,7 @@ async function recordOnPress() {
 
   return (
     <View style={styles.container}>
-      <Text style={{fontSize: 24, fontWeight: 'bold', top: 24}}>{stateMessage[state]}</Text>
+      <Text style={{fontSize: 24, fontWeight: 'bold', top: 16}}>{stateMessage[state]}</Text>
       <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
         <Text style={styles.noteText}>{text}</Text>
       </ScrollView>
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-between',
     height:10,
   },
   tabBar: {
@@ -259,10 +259,10 @@ const styles = StyleSheet.create({
     width: 360,
     height: 180,
     marginHorizontal: 24,
+    marginBottom: 24,
   }, 
   noteContainer: {
     maxHeight: 400,
-    // borderWidth: 1,
     paddingHorizontal: 8,
   },
   containerContent: {

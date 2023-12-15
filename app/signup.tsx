@@ -5,7 +5,6 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { createAccount } from '../utils/backend';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function SignUpPage() {
 

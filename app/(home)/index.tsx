@@ -114,12 +114,14 @@ export default function NoteTakingPage() {
               <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
                 <Text style={styles.noteText}>{noteText}</Text>
               </ScrollView>
-              <TimerProgressBar 
-                onTimerComplete={transcribeAndSave}
-                color='mediumturquoise' 
-                time={30} 
-                active={state == NoteTakingState.RECORDING_NOTE}
-              />
+              <View style={{paddingBottom: 24}}>
+                <TimerProgressBar 
+                  onTimerComplete={transcribeAndSave}
+                  color='mediumturquoise' 
+                  time={30} 
+                  active={state == NoteTakingState.RECORDING_NOTE}
+                />
+              </View>
           </View>
           <View style={styles.buttonContainer}>
             <Pressable 
