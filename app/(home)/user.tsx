@@ -40,7 +40,7 @@ export default function App() {
             onPress={() => auth.signOut()}
             color={'mediumturquoise'}
         />
-        <TouchableOpacity onPress={() => openURL(reviewUrl)}>
+        <TouchableOpacity onPress={() => openURL(reviewUrl)} style={styles.feedbackButton}>
           <Text style={{color: 'mediumturquoise'}}>give your feedback</Text>
         </TouchableOpacity>
       </View> 
@@ -70,6 +70,11 @@ const styles = StyleSheet.create({
     bottom: 16,
     padding: 10,
     backgroundColor: 'lightblue',
+  },
+  feedbackButton: {
+    position: 'absolute',
+    bottom: 16,
+    padding: 10,
   }
 });
 
