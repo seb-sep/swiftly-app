@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { saveNote, transcribeAudio, queryNotesWithVoice, ping } from '../../utils/backend'
+import { saveNote, transcribeAudio, ping } from '../../utils/backend'
 import { startRecording, stopRecording } from '../../utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { auth } from '../../firebaseConfig';
-import 'react-native-gesture-handler';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, ScrollView, State } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,14 +12,12 @@ import TimerProgressBar from '../../components/timer';
 
 enum NoteTakingState {
   RECORDING_NOTE,
-  RECORDING_CHAT,
   QUERYING,
   IDLE
 }
 
 const stateMessage: { [key in NoteTakingState]: string } = {
   [NoteTakingState.RECORDING_NOTE]: "what's on your mind?",
-  [NoteTakingState.RECORDING_CHAT]: 'what do you want to know?',
   [NoteTakingState.QUERYING]: 'hold on a sec...',
   [NoteTakingState.IDLE]: 'think swiftly.',
 };
@@ -55,13 +52,13 @@ export default function NoteTakingPage() {
     });
   });
 
-  async function recordOnPress(actionType: NoteTakingState.RECORDING_CHAT | NoteTakingState.RECORDING_NOTE) {
+  async function recordOnPress() {
     ping(); // warm up the serverless backend to avoid cold start
     try {
       if (!recording) {
         const recording = await startRecording();
         setRecording(recording);
-        setState(actionType);
+        setState(NoteTakingState.RECORDING_NOTE);
       }
     } catch (err) {
       console.error(err);
@@ -99,32 +96,6 @@ export default function NoteTakingPage() {
   setState(NoteTakingState.IDLE);
 }
 
-async function queryNotes() {
-  if (state === NoteTakingState.RECORDING_CHAT && recording) {
-    const fileUri = await stopRecording(recording);
-    setRecording(undefined);
-    setFileUri(fileUri);
-    setState(NoteTakingState.QUERYING);
-    if (!fileUri) {
-      setDebug('no audio recorded');
-      return;
-    }
-
-    try {
-      console.log("Querying notes with voice");
-      const content = await queryNotesWithVoice(username, fileUri);
-      setNoteText(content);
-    } catch (err) {
-      console.log("There was an error: ", err);
-      setDebug(JSON.stringify(err));
-    }
-
-    setState(NoteTakingState.IDLE);
-
-    setDebug('');
-    setFileUri('');
-  }
-}
 
 
 
@@ -140,33 +111,26 @@ async function queryNotes() {
       <View style={styles.container}>
           <View style={styles.displayContainer}>
               <Text style={{fontSize: 24, fontWeight: 'bold'}}>{stateMessage[state]}</Text>
-              <ScrollView style={styles.noteContainer}>
+              <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
                 <Text style={styles.noteText}>{noteText}</Text>
               </ScrollView>
               <TimerProgressBar 
-                onTimerComplete={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : queryNotes} 
+                onTimerComplete={transcribeAndSave}
                 color='mediumturquoise' 
                 time={30} 
-                active={state === NoteTakingState.RECORDING_CHAT || state == NoteTakingState.RECORDING_NOTE}
+                active={state == NoteTakingState.RECORDING_NOTE}
               />
           </View>
           <View style={styles.buttonContainer}>
             <Pressable 
-              disabled={state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_CHAT}
-              style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_CHAT ? 'gray' : 'mediumseagreen'}]} 
-              onPress={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : () => recordOnPress(NoteTakingState.RECORDING_NOTE)}
+              disabled={state === NoteTakingState.QUERYING}
+              style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING ? 'gray' : 'mediumseagreen'}]} 
+              onPress={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : () => recordOnPress()}
             >
               <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "stop"} size={48} color="white" />
               <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_NOTE ? 'record note' : 'stop recording'}</Text>
             </Pressable>
-            <Pressable 
-              disabled={state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_NOTE}
-              style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING || state === NoteTakingState.RECORDING_NOTE ? 'gray' : 'mediumpurple'}]} 
-              onPress={state === NoteTakingState.RECORDING_CHAT ? queryNotes : () => recordOnPress(NoteTakingState.RECORDING_CHAT)}
-            >
-              <Ionicons name={state !== NoteTakingState.RECORDING_CHAT? "search" : "stop"} size={48} color="white" />
-              <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_CHAT ? 'query notes' : 'stop recording'}</Text>
-            </Pressable>
+            
           </View>
       </View>
     </FlingGestureHandler>
@@ -192,26 +156,37 @@ displayContainer: {
 noteText: {
   fontSize: 16,
   fontWeight: '500',
+  // borderWidth: 1,
+  // borderColor: 'blue',
+  textAlign: 'center',
+},
+containerContent: {
+  flexGrow: 1,
+  justifyContent: 'center',
 },
 noteContainer: {
   maxHeight: 400,
+  width: 280,
   // borderWidth: 1,
+  // borderColor: 'red',
   paddingHorizontal: 8,
 },
 buttonContainer: {
   height: 200,
-  flexDirection: 'row',
+  width: 360,
+  // borderWidth: 1,
+  flexDirection: 'column',
   justifyContent: 'space-evenly',
   alignItems: 'center',
-  paddingBottom: 24,
+  paddingBottom: 48,
 },
 button: {
   alignItems: 'center',
   justifyContent: 'space-evenly',
   flexDirection: 'column',
+  width: 360,
+  height: 180,
   borderRadius: 10,
-  width: 160,
-  height: 200,
   marginHorizontal: 24,
 },
 });
