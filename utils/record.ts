@@ -1,5 +1,6 @@
 
 import { Audio } from 'expo-av';
+import { deleteAsync } from 'expo-file-system';
 
 const customRecordingOptions: Audio.RecordingOptions = {
   isMeteringEnabled: true,
@@ -50,11 +51,22 @@ export async function stopRecording(recording: Audio.Recording): Promise<string>
     });
     const uri = recording.getURI();
 
+
     if (uri) {
         return uri;
     } else {
         throw new ReferenceError('uri is undefined');
     }
-    
+}
+
+export async function cancelRecording(recording: Audio.Recording): Promise<void> {
+  try {
+    const uri = await stopRecording(recording);
+    if (uri) {
+      await deleteAsync(uri);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 

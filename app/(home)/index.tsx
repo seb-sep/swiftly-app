@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { saveNote, transcribeAudio, ping } from '../../utils/backend'
+import { transcribeNoteAndSave, ping } from '../../utils/backend'
 import { startRecording, stopRecording } from '../../utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
@@ -79,12 +79,8 @@ export default function NoteTakingPage() {
         return;
       }
       try {
-        const content = await transcribeAudio(fileUri);
-        setNoteText(content);
-        console.log("Response is " + content);
-        setDebug('saving...');
-        await saveNote(username, content);
-        setDebug('saved!');
+       const content = await transcribeNoteAndSave(username, fileUri);
+        setNoteText(content); 
       } catch (err) {
         console.log("There was an error: ", err);
         setDebug(JSON.stringify(err));

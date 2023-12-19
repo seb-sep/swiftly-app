@@ -181,7 +181,6 @@ async function recordOnPress() {
 }
 
 const computeLists = (titles: noteTitle[], username: string) => {
-  console.log('computing lists');
   return {
     [TabState.RECENT]: <TitleList titles={[...titles].sort((a, b) => b.created.getTime() - a.created.getTime())} />,
     [TabState.OLDEST]: <TitleList titles={[...titles].sort((a, b) => a.created.getTime() - b.created.getTime())} />,
