@@ -175,8 +175,8 @@ const NoteQueryView: React.FC<{username: string}> = ({ username }) => {
           style={[styles.button, {backgroundColor: state === QueryState.QUERYING ? 'gray' : 'mediumpurple'}]} 
           onPress={state === QueryState.RECORDING_CHAT ? queryNotes : () => recordOnPress()}
         >
-          <Ionicons name={state !== QueryState.RECORDING_CHAT ? "mic-outline" : "stop"} size={48} color="white" />
-          <Text style={{color: 'white', fontSize: 20}}>{state !== QueryState.RECORDING_CHAT ? 'query notes' : 'stop recording'}</Text>
+          <Ionicons name={state !== QueryState.RECORDING_CHAT ? "mic-outline" : "chatbubbles-outline"} size={48} color="white" />
+          <Text style={{color: 'white', fontSize: 20}}>{state !== QueryState.RECORDING_CHAT ? 'query notes' : 'send query'}</Text>
         </Pressable>
         <Pressable
           disabled={state !== QueryState.RECORDING_CHAT}
