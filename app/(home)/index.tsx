@@ -18,7 +18,7 @@ enum NoteTakingState {
 
 const stateMessage: { [key in NoteTakingState]: string } = {
   [NoteTakingState.RECORDING_NOTE]: "what's on your mind?",
-  [NoteTakingState.QUERYING]: 'hold on a sec...',
+  [NoteTakingState.QUERYING]: 'saving note!',
   [NoteTakingState.IDLE]: 'think swiftly.',
 };
 
@@ -69,27 +69,30 @@ export default function NoteTakingPage() {
   async function transcribeAndSave() {
     console.log(state);
     if (state === NoteTakingState.RECORDING_NOTE && recording) {
+      setState(NoteTakingState.QUERYING);
       const fileUri = await stopRecording(recording);
       setRecording(undefined);
       setFileUri(fileUri);
-      setState(NoteTakingState.QUERYING);
-      setDebug('transcribing...');
+      console.log('transcribing...');
+      setFileUri('');
+      setState(NoteTakingState.IDLE);
       if (!fileUri) {
-        setDebug('no audio recorded');
+        setNoteText('no audio recorded. try again maybe?');
         return;
       }
-      try {
-       const content = await transcribeNoteAndSave(username, fileUri);
-        setNoteText(content); 
-      } catch (err) {
-        console.log("There was an error: ", err);
-        setDebug(JSON.stringify(err));
-    }
+      setNoteText("check back when we're done.");
+      const save = async () => {
+        try {
+        const content = await transcribeNoteAndSave(username, fileUri);
+          setNoteText(content); 
+        } catch (err) {
+          console.log("There was an error: ", err);
+          setDebug(JSON.stringify(err));
+        }
+      };
+      save();
 
-    setFileUri('');
   }
-
-  setState(NoteTakingState.IDLE);
 }
 
 async function cancelRecordingOnPress() {
@@ -131,8 +134,8 @@ async function cancelRecordingOnPress() {
               style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING ? 'gray' : 'mediumseagreen'}]} 
               onPress={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : () => recordOnPress()}
             >
-              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "stop"} size={48} color="white" />
-              <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_NOTE ? 'record note' : 'stop recording'}</Text>
+              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "ios-cloud-upload-outline"} size={48} color="white" />
+              <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_NOTE ? 'record note' : 'save note'}</Text>
             </Pressable>
             <Pressable
               disabled={state !== NoteTakingState.RECORDING_NOTE}
