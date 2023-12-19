@@ -8,8 +8,9 @@ import { noteTitle } from '../../utils/backend'
 import { ScrollView, Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 import { TitleList } from '../../components/titleList';
 import { saveNote, queryNotesWithVoice, ping } from '../../utils/backend'
-import { startRecording, stopRecording } from '../../utils/record';
+import { startRecording, stopRecording, cancelRecording } from '../../utils/record';
 import { Audio } from 'expo-av';
+import TimerProgressBar from '../../components/timer';
 
 enum TabState {
   RECENT = 'Recent',
@@ -46,23 +47,6 @@ export default function NotesPage() {
       }
 
     }, []));   
-
-    // useEffect(() => {
-    //   console.log(`tab state: ${tabState}`);
-    //   let sortedTitles = [...titles];
-    //   switch (tabState) {
-    //     case TabState.RECENT:
-    //       sortedTitles.sort((a, b) => b.created.getTime() - a.created.getTime());
-    //       break;
-    //     case TabState.OLDEST:
-    //       sortedTitles.sort((a, b) => a.created.getTime() - b.created.getTime());
-    //       break;
-    //     case TabState.FAVORITES:
-    //       sortedTitles = titles.filter((note) => note.favorite);
-    //       break;
-    //   }
-    //   setDisplayTitles(sortedTitles);
-    // }, [tabState]);
 
     const displays = useMemo(() => computeLists(titles, username), [titles]);
 
@@ -162,20 +146,46 @@ async function recordOnPress() {
   }
 }
 
+async function cancelRecordingOnPress() {
+  if (state === QueryState.RECORDING_CHAT && recording) {
+    await cancelRecording(recording);
+    setRecording(undefined);
+    setFileUri('');
+    setState(QueryState.IDLE);
+  }
+}
+
   return (
     <View style={styles.container}>
-      <Text style={{fontSize: 24, fontWeight: 'bold', top: 16}}>{stateMessage[state]}</Text>
-      <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
-        <Text style={styles.noteText}>{text}</Text>
-      </ScrollView>
-      <Pressable 
-        disabled={state === QueryState.QUERYING}
-        style={[styles.button, {backgroundColor: state === QueryState.QUERYING ? 'gray' : 'mediumpurple'}]} 
-        onPress={state === QueryState.RECORDING_CHAT ? queryNotes : () => recordOnPress()}
-      >
-        <Ionicons name={state !== QueryState.RECORDING_CHAT ? "mic-outline" : "stop"} size={48} color="white" />
-        <Text style={{color: 'white', fontSize: 20}}>{state !== QueryState.RECORDING_CHAT ? 'query notes' : 'stop recording'}</Text>
-      </Pressable>
+      <View style={styles.displayContainer}>
+        <Text style={{fontSize: 24, fontWeight: 'bold', top: 16}}>{stateMessage[state]}</Text>
+        <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
+          <Text style={styles.noteText}>{text}</Text>
+        </ScrollView>
+        <TimerProgressBar 
+          onTimerComplete={queryNotes}
+          color='mediumturquoise' 
+          time={30} 
+          active={state == QueryState.RECORDING_CHAT}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <Pressable 
+          disabled={state === QueryState.QUERYING}
+          style={[styles.button, {backgroundColor: state === QueryState.QUERYING ? 'gray' : 'mediumpurple'}]} 
+          onPress={state === QueryState.RECORDING_CHAT ? queryNotes : () => recordOnPress()}
+        >
+          <Ionicons name={state !== QueryState.RECORDING_CHAT ? "mic-outline" : "stop"} size={48} color="white" />
+          <Text style={{color: 'white', fontSize: 20}}>{state !== QueryState.RECORDING_CHAT ? 'query notes' : 'stop recording'}</Text>
+        </Pressable>
+        <Pressable
+          disabled={state !== QueryState.RECORDING_CHAT}
+          style={[styles.button, styles.cancelButton, {backgroundColor: state === QueryState.RECORDING_CHAT ? 'indianred' : 'gray'}]}
+          onPress={cancelRecordingOnPress}
+        >
+          <Ionicons name="stop" size={48} color="white" />
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -195,8 +205,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     height:10,
+  },
+  displayContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    maxHeight: 400,
+    padding: 16,
   },
   tabBar: {
     flex: 1,
@@ -250,6 +268,12 @@ const styles = StyleSheet.create({
     height: 16,
     color: 'gray',
   },
+  buttonContainer: {  
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    height: 250,
+  },
   button: {
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -258,8 +282,11 @@ const styles = StyleSheet.create({
     width: 360,
     height: 180,
     marginHorizontal: 24,
-    marginBottom: 24,
   }, 
+  cancelButton: {
+    height: 48,
+    marginTop: 4,
+  },
   noteContainer: {
     maxHeight: 400,
     paddingHorizontal: 8,

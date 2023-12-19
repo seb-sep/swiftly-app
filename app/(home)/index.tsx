@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { transcribeNoteAndSave, ping } from '../../utils/backend'
-import { startRecording, stopRecording } from '../../utils/record';
+import { startRecording, stopRecording, cancelRecording } from '../../utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
 import { auth } from '../../firebaseConfig';
@@ -92,6 +92,14 @@ export default function NoteTakingPage() {
   setState(NoteTakingState.IDLE);
 }
 
+async function cancelRecordingOnPress() {
+  if (state === NoteTakingState.RECORDING_NOTE && recording) {
+    await cancelRecording(recording);
+    setRecording(undefined);
+    setFileUri('');
+    setState(NoteTakingState.IDLE);
+  }
+}
 
 
 
@@ -110,14 +118,12 @@ export default function NoteTakingPage() {
               <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
                 <Text style={styles.noteText}>{noteText}</Text>
               </ScrollView>
-              <View style={{paddingBottom: 24}}>
-                <TimerProgressBar 
-                  onTimerComplete={transcribeAndSave}
-                  color='mediumturquoise' 
-                  time={30} 
-                  active={state == NoteTakingState.RECORDING_NOTE}
-                />
-              </View>
+              <TimerProgressBar 
+                onTimerComplete={transcribeAndSave}
+                color='mediumturquoise' 
+                time={30} 
+                active={state == NoteTakingState.RECORDING_NOTE}
+              />
           </View>
           <View style={styles.buttonContainer}>
             <Pressable 
@@ -128,7 +134,13 @@ export default function NoteTakingPage() {
               <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "stop"} size={48} color="white" />
               <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_NOTE ? 'record note' : 'stop recording'}</Text>
             </Pressable>
-            
+            <Pressable
+              disabled={state !== NoteTakingState.RECORDING_NOTE}
+              style={[styles.button, styles.cancelButton, {backgroundColor: state === NoteTakingState.RECORDING_NOTE ? 'indianred' : 'gray'}]}
+              onPress={cancelRecordingOnPress}
+            >
+              <Ionicons name="stop" size={48} color="white" />
+            </Pressable>
           </View>
       </View>
     </FlingGestureHandler>
@@ -141,15 +153,16 @@ container: {
   flex: 1,
   backgroundColor: '#fff',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'space-around',
   flexDirection: 'column',
   paddingHorizontal: 24,
 },
 displayContainer: {
-  height: 500,
+  height: 450,
   flexDirection: 'column',
   justifyContent: 'space-evenly',
   alignItems: 'center',
+  // borderWidth: 1,
 },
 noteText: {
   fontSize: 16,
@@ -170,11 +183,11 @@ noteContainer: {
   paddingHorizontal: 8,
 },
 buttonContainer: {
-  height: 200,
+  height: 250,
   width: 360,
   // borderWidth: 1,
   flexDirection: 'column',
-  justifyContent: 'space-evenly',
+  justifyContent: 'flex-start',
   alignItems: 'center',
   paddingBottom: 48,
 },
@@ -186,6 +199,10 @@ button: {
   height: 180,
   borderRadius: 10,
   marginHorizontal: 24,
+},
+cancelButton: {
+  height: 48,
+  marginTop: 4,
 },
 });
 
