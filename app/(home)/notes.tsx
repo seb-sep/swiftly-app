@@ -108,57 +108,57 @@ const NoteQueryView: React.FC<{username: string}> = ({ username }) => {
   const [fileUri, setFileUri] = useState('');
   const [text, setText] = useState('');
 
-async function queryNotes() {
-  if (state === QueryState.RECORDING_CHAT && recording) {
-    const fileUri = await stopRecording(recording);
-    setRecording(undefined);
-    setFileUri(fileUri);
-    setState(QueryState.QUERYING);
-    if (!fileUri) {
-      console.log('no audio recorded');
-      return;
-    }
+  async function queryNotes() {
+    if (state === QueryState.RECORDING_CHAT && recording) {
+      const fileUri = await stopRecording(recording);
+      setRecording(undefined);
+      setFileUri(fileUri);
+      setState(QueryState.QUERYING);
+      if (!fileUri) {
+        console.log('no audio recorded');
+        return;
+      }
 
+      try {
+        console.log("Querying notes with voice");
+        const content = await queryNotesWithVoice(username, fileUri);
+        setText(content);
+      } catch (err) {
+        console.log("There was an error: ", err);
+      }
+
+      setState(QueryState.IDLE);
+
+      setFileUri('');
+    }
+  }
+
+  async function recordOnPress() {
+    ping(); // warm up the serverless backend to avoid cold start
     try {
-      console.log("Querying notes with voice");
-      const content = await queryNotesWithVoice(username, fileUri);
-      setText(content);
+      if (!recording) {
+        const recording = await startRecording();
+        setRecording(recording);
+        setState(QueryState.RECORDING_CHAT);
+      }
     } catch (err) {
-      console.log("There was an error: ", err);
+      console.error(err);
     }
-
-    setState(QueryState.IDLE);
-
-    setFileUri('');
   }
-}
 
-async function recordOnPress() {
-  ping(); // warm up the serverless backend to avoid cold start
-  try {
-    if (!recording) {
-      const recording = await startRecording();
-      setRecording(recording);
-      setState(QueryState.RECORDING_CHAT);
+  async function cancelRecordingOnPress() {
+    if (state === QueryState.RECORDING_CHAT && recording) {
+      await cancelRecording(recording);
+      setRecording(undefined);
+      setFileUri('');
+      setState(QueryState.IDLE);
     }
-  } catch (err) {
-    console.error(err);
   }
-}
-
-async function cancelRecordingOnPress() {
-  if (state === QueryState.RECORDING_CHAT && recording) {
-    await cancelRecording(recording);
-    setRecording(undefined);
-    setFileUri('');
-    setState(QueryState.IDLE);
-  }
-}
 
   return (
     <View style={styles.container}>
       <View style={styles.displayContainer}>
-        <Text style={{fontSize: 24, fontWeight: 'bold', top: 16}}>{stateMessage[state]}</Text>
+        <Text style={{fontSize: 24, fontWeight: 'bold',}}>{stateMessage[state]}</Text>
         <ScrollView style={styles.noteContainer} contentContainerStyle={styles.containerContent}>
           <Text style={styles.noteText}>{text}</Text>
         </ScrollView>
@@ -211,10 +211,11 @@ const styles = StyleSheet.create({
   displayContainer: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    maxHeight: 400,
-    padding: 16,
+    maxHeight: 375,
+    height: 375,
+    paddingHorizontal: 16,
   },
   tabBar: {
     flex: 1,
@@ -288,7 +289,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   noteContainer: {
-    maxHeight: 400,
+    maxHeight: 300,
     paddingHorizontal: 8,
   },
   containerContent: {

@@ -158,7 +158,7 @@ container: {
   paddingHorizontal: 24,
 },
 displayContainer: {
-  height: 450,
+  height: 425,
   flexDirection: 'column',
   justifyContent: 'space-evenly',
   alignItems: 'center',
@@ -186,6 +186,7 @@ buttonContainer: {
   height: 250,
   width: 360,
   // borderWidth: 1,
+  // borderColor: 'green',
   flexDirection: 'column',
   justifyContent: 'flex-start',
   alignItems: 'center',

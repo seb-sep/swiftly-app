@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Button } from 'react-native';
+import { View, Button, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
 
 interface TimerProgressBarProps {
@@ -48,10 +48,20 @@ const TimerProgressBar: React.FC<TimerProgressBarProps> = ({ onTimerComplete, co
   };
 
   return (
-    <>
+    <View style={styles.container}>
       {active && <Progress.Bar progress={progress} width={300} color={color}/>}
-    </>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    height: 20,
+    maxHeight: 20,
+    width: 300,
+  },
+});
 
 export default TimerProgressBar;
