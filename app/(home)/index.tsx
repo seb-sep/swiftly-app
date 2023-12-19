@@ -32,7 +32,7 @@ export default function NoteTakingPage() {
 
   const goToNotes = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
     if (event.nativeEvent.state === State.END) {
-      router.replace('/titles');
+      router.replace('/notes');
     }
   };
   
