@@ -67,15 +67,15 @@ export default function NotePage() {
         direction={Directions.RIGHT}
         onHandlerStateChange={goBack}>
         <View style={styles.container}>
-          <TouchableOpacity onPress={onDelete} style={styles.topLeft}>
-            <Ionicons name="trash-outline" size={24} color="indianred" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={toggleFavorite} style={styles.topRight}>
-            <Ionicons name={note?.favorite ? "star" : "star-outline"} size={24} color="mediumturquoise" />
+          <TouchableOpacity onPress={() => router.replace('/notes')} style={[styles.top, {left: 48}]} >
+            <Ionicons name="chevron-back-outline" size={24} color="gray" />
           </TouchableOpacity>
           <Text style={styles.noteText}>{note?.content}</Text>
-          <TouchableOpacity onPress={() => router.replace('/notes')} style={styles.bottom} >
-            <Ionicons name="chevron-back-outline" size={24} color="gray" />
+          <TouchableOpacity onPress={onDelete} style={[styles.bottom, {left: 48}]}>
+            <Ionicons name="trash-outline" size={24} color="indianred" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleFavorite} style={[styles.bottom, {right: 48}]}>
+            <Ionicons name={note?.favorite ? "bookmark" : "bookmark-outline"} size={24} color="mediumturquoise" />
           </TouchableOpacity>
         </View>
       </FlingGestureHandler>
@@ -90,21 +90,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  topRight: {
+  top: {
     position: 'absolute',
     top: 32,
     right: 48,
     padding: 8,
   },
-  topLeft: {
-    position: 'absolute',
-    top: 32,
-    left: 48,
-    padding: 8,
-  },
   bottom: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 32,
     padding: 8,
   },
   noteText: {

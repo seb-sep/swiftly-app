@@ -183,7 +183,7 @@ const NoteQueryView: React.FC<{username: string}> = ({ username }) => {
           style={[styles.button, styles.cancelButton, {backgroundColor: state === QueryState.RECORDING_CHAT ? 'indianred' : 'gray'}]}
           onPress={cancelRecordingOnPress}
         >
-          <Ionicons name="stop" size={48} color="white" />
+          <Ionicons name="ios-backspace-outline" size={48} color="white" />
         </Pressable>
       </View>
     </View>
