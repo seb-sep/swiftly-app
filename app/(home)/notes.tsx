@@ -1,16 +1,16 @@
 import { View, FlatList, StyleSheet, TouchableOpacity, Text, Pressable } from 'react-native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
-import { getTitles } from '../../utils/backend';
-import { auth } from '../../firebaseConfig';
+import { getTitles } from '@/utils/backend';
+import { auth } from '@/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
-import { noteTitle } from '../../utils/backend'
+import { noteTitle } from '@/utils/backend'
 import { ScrollView, Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
-import { TitleList } from '../../components/titleList';
-import { saveNote, queryNotesWithVoice, ping } from '../../utils/backend'
-import { startRecording, stopRecording, cancelRecording } from '../../utils/record';
+import { TitleList } from '@/components/titleList';
+import { saveNote, queryNotesWithVoice, ping } from '@/utils/backend'
+import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
 import { Audio } from 'expo-av';
-import TimerProgressBar from '../../components/timer';
+import TimerProgressBar from '@/components/timer';
 
 enum TabState {
   RECENT = 'Recent',

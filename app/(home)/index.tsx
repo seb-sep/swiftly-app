@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { transcribeNoteAndSave, ping } from '../../utils/backend'
-import { startRecording, stopRecording, cancelRecording } from '../../utils/record';
+import { transcribeNoteAndSave, ping } from '@/utils/backend'
+import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
-import { auth } from '../../firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, ScrollView, State } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
-import TimerProgressBar from '../../components/timer';
+import TimerProgressBar from '@/components/timer';
+import { useAuth } from '@/utils/auth';
 
 enum NoteTakingState {
   RECORDING_NOTE,
@@ -30,6 +30,8 @@ export default function NoteTakingPage() {
   const [fileUri, setFileUri] = useState('');
   const [debug, setDebug] = useState('');
 
+  const user = useAuth();
+
   const goToNotes = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
     if (event.nativeEvent.state === State.END) {
       router.replace('/notes');
@@ -42,15 +44,7 @@ export default function NoteTakingPage() {
     }
   };
 
-  useFocusEffect(() => {
-    const authed = onAuthStateChanged(auth, (user) => {
-      if (user && user.email) {
-        setUsername(user.email);
-      } else {
-        router.replace('/signin');
-      }
-    });
-  });
+  
 
   async function recordOnPress() {
     ping(); // warm up the serverless backend to avoid cold start

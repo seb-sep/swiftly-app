@@ -1,7 +1,7 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { auth } from '../../firebaseConfig';
+import { auth } from '@/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { Linking } from 'react-native';
 import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
