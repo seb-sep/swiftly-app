@@ -10,8 +10,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function SignInPage() {
 
-    const [enterEmail, setEmail] = useState('');
-    const [enterPassword, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [currentUser, setCurrentUser] = useState('');
     const [debug, setDebug] = useState('');
   
@@ -24,71 +24,71 @@ export default function SignInPage() {
     }, []);
     const handleSignIn = async () => {
         try {
-            const credential = await signInWithEmailAndPassword(auth, enterEmail, enterPassword);
-            setDebug(JSON.stringify(credential));
+            const credential = await signInWithEmailAndPassword(auth, email, password);
+            router.replace('/');
         } catch (error) {
-            setDebug(JSON.stringify(error));
+            setDebug('sign in failed, please try again');
+            setTimeout(() => {
+                setDebug('');
+            }, 1000);
         }
-        router.replace('/');
-
-    };
-
-    const goToRecord = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
-      if (event.nativeEvent.state === State.END && currentUser) {
-        router.replace('/');
-      }
     };
 
     return (
-        <FlingGestureHandler
-            direction={Directions.RIGHT}
-            onHandlerStateChange={goToRecord}
-        >
-            {!currentUser ?
-                <View style={styles.container}>
-                    <Text>sign in</Text>
-                    <TextInput
-                        value={enterEmail}
-                        onChangeText={setEmail}
-                        placeholder='email here'
-                        autoCapitalize='none'
-                    />
-                    <TextInput
-                        value={enterPassword}
-                        onChangeText={setPassword}
-                        placeholder='password here'
-                        autoCapitalize='none'
-                    />
-                    <Button
-                        title={'submit'}
-                        onPress={handleSignIn}
-                        color={'mediumpurple'}
-                    />
-                    <Link href='/signup' style={styles.notesIconStyle}>sign up</Link>
-                    <Text>{debug}</Text>
-                </View>
-                :
-                <View style={styles.container}>
-                    <Ionicons name="chevron-back-outline" size={24} color="gray" style={styles.topLeft}/>
-                    <Text>signed in as {currentUser}</Text>
-                    <Button
-                        title={'sign out'}
-                        onPress={() => auth.signOut()}
-                    />
-                    <TouchableOpacity onPress={() => router.replace('/')} style={styles.notesIconStyle} >
-                        <Ionicons name="mic-outline" size={24} color="mediumturquoise"/>
-                    </TouchableOpacity>
-                </View>
-            }
-        </FlingGestureHandler>
+        <View style={styles.container}>
+            <Text style={{fontSize: 24, fontWeight: 'bold'}}>sign in</Text>
+            <View style={styles.textContainer}>
+                <TextInput
+                    style={styles.textBox}
+                    value={email}
+                    onChangeText={setEmail}
+                    placeholder='email here'
+                    autoCapitalize='none'
+                />
+                <TextInput
+                    style={styles.textBox}
+                    value={password}
+                    onChangeText={setPassword}
+                    placeholder='password here'
+                    autoCapitalize='none'
+                />
+
+                <TouchableOpacity
+                    onPress={handleSignIn}
+                    style={{backgroundColor: 'mediumpurple', padding: 10, borderRadius: 4}}
+                >
+                    <Text style={{color: 'white'}}>sign in</Text>
+                </TouchableOpacity>
+                <Text>{debug}</Text>
+            </View>
+            <View style={styles.notesIconStyle}>
+                <Link style={{color: 'white'}} href='/signup' >don't have an account? sign up</Link>
+            </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'center',
+      justifyContent: 'space-evenly',
       alignItems: 'center',
+    },
+    textContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        rowGap: 8,
+        height: 64,
+        width: 256,
+    },
+    textBox: {
+        borderColor: 'darkgray',
+        borderWidth: 1,
+        borderRadius: 4,
+        height: 32,
+        width: 240,
+        padding: 8,
     },
     cornerTopRight: {
         position: 'absolute',
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
         bottom: 16,
         padding: 10,
         fontSize: 20,
-        color: 'mediumturquoise',
+        borderRadius: 4,
+        backgroundColor: 'mediumseagreen',
     }
 });
