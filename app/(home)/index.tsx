@@ -25,7 +25,7 @@ const stateMessage: { [key in NoteTakingState]: string } = {
 export default function NoteTakingPage() {
   const [state, setState] = useState(NoteTakingState.IDLE);
   const [noteText, setNoteText] = useState('');
-  const [username, setUsername] = useState('');
+  // const [username, setUsername] = useState('');
   const [recording, setRecording] = useState<Audio.Recording>();
   const [fileUri, setFileUri] = useState('');
   const [debug, setDebug] = useState('');
@@ -77,8 +77,10 @@ export default function NoteTakingPage() {
       setNoteText("check back when we're done.");
       const save = async () => {
         try {
-        const content = await transcribeNoteAndSave(username, fileUri);
-          setNoteText(content); 
+          if (user?.email) {
+            const content = await transcribeNoteAndSave(user?.email, fileUri);
+            setNoteText(content); 
+          }
         } catch (err) {
           console.log("There was an error: ", err);
           setDebug(JSON.stringify(err));

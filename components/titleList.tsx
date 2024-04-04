@@ -5,16 +5,16 @@ import React from 'react';
 
 
 export const TitleList: React.FC<{ titles: noteTitle[] }> = ({ titles }) => {
-    return (
-        <View style={styles.container}>
-            <FlatList
-                data={titles}
-                keyExtractor={(title) => title.id.toString()}
-                renderItem={({ item }) => <NoteTitleElement note={item} />}
-                style={styles.notesView}
-            />
-        </View>
-    )
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={titles}
+        keyExtractor={(title) => title.id.toString()}
+        renderItem={({ item }) => <NoteTitleElement note={item} />}
+        style={styles.notesView}
+      />
+    </View>
+  )
 }
 
 const MAX_TITLE_CHARS = 40
@@ -26,10 +26,11 @@ const NoteTitleElement: React.FC<{ note: noteTitle }> = ({ note }) => {
       style={styles.title}>
       <Text style={styles.titleText}>{trimTitle(note.title)}</Text>
       <Text style={styles.dateText}>{note.created.toDateString()}</Text>
-    </TouchableOpacity> 
+    </TouchableOpacity>
   );
 }
 
+// TODO text-ellipsis overflow clip
 
 function trimTitle(title: string): string {
   return title.length > MAX_TITLE_CHARS ? title.substring(0, MAX_TITLE_CHARS) + '...' : title;
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     // borderColor: 'red',
   },
-  
+
   notesView: {
     position: 'absolute',
     width: 350,
