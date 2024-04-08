@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { transcribeNoteAndSave, ping } from '@/utils/backend'
+import { transcribeNoteAndSave, ping, saveNote } from '@/utils/backend'
 import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
@@ -9,6 +9,7 @@ import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, 
 import { Ionicons } from '@expo/vector-icons';
 import TimerProgressBar from '@/components/timer';
 import { useAuth } from '@/utils/auth';
+import { transcribe } from 'whisper-kit-expo';
 
 enum NoteTakingState {
   RECORDING_NOTE,
@@ -61,7 +62,7 @@ export default function NoteTakingPage() {
   }
 
   async function transcribeAndSave() {
-    console.log(state);
+    // record audio file
     if (state === NoteTakingState.RECORDING_NOTE && recording) {
       setState(NoteTakingState.QUERYING);
       const fileUri = await stopRecording(recording);
@@ -74,19 +75,26 @@ export default function NoteTakingPage() {
         setNoteText('no audio recorded. try again maybe?');
         return;
       }
+
+      // transcribe audio
       setNoteText("check back when we're done.");
-      const save = async () => {
-        try {
-          if (user?.email) {
-            const content = await transcribeNoteAndSave(user?.email, fileUri);
-            setNoteText(content); 
-          }
-        } catch (err) {
-          console.log("There was an error: ", err);
-          setDebug(JSON.stringify(err));
-        }
-      };
-      save();
+
+      const transcription = await transcribe(fileUri);
+      // const transcription = "foo";
+      console.log(`Transcription is ${transcription}`);
+      setNoteText(transcription);
+
+      // immediately save the note
+      // (async () => {
+      //   try {
+      //     if (user?.email) {
+      //       await saveNote(user?.email, transcription);
+      //     }
+      //   } catch (err) {
+      //     console.log("There was an error: ", err);
+      //     setDebug(JSON.stringify(err));
+      //   }
+      // })();
 
   }
 }

@@ -1,4 +1,5 @@
 import axios, { AxiosError, isAxiosError } from 'axios';
+import { transcribe } from 'whisper-kit-expo';
 
 import * as fs from 'expo-file-system';
 
@@ -132,6 +133,7 @@ export async function transcribeNoteAndSave(username: string, fileUri: string): 
     }
 
 }
+
 
 export async function queryNotesWithVoice(username: string, fileUri: string): Promise<string> {
     const url = getBackendURL();
