@@ -80,21 +80,19 @@ export default function NoteTakingPage() {
       setNoteText("check back when we're done.");
 
       const transcription = await transcribe(fileUri);
-      // const transcription = "foo";
-      console.log(`Transcription is ${transcription}`);
       setNoteText(transcription);
 
       // immediately save the note
-      // (async () => {
-      //   try {
-      //     if (user?.email) {
-      //       await saveNote(user?.email, transcription);
-      //     }
-      //   } catch (err) {
-      //     console.log("There was an error: ", err);
-      //     setDebug(JSON.stringify(err));
-      //   }
-      // })();
+      (async () => {
+        try {
+          if (user?.email) {
+            await saveNote(user?.email, transcription);
+          }
+        } catch (err) {
+          console.log("There was an error: ", err);
+          setDebug(JSON.stringify(err));
+        }
+      })();
 
   }
 }

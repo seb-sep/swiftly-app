@@ -7,7 +7,6 @@ export async function saveNote(username: string, content: string): Promise<void>
     const url = getBackendURL();
 
     try {
-        console.log("Trying to save note")
         const response = await axios.post(`${url}/users/${username}/notes/save`, { content: content });
         if (response.status >= 400) {
             throw new Error(`Error saving note: ${response.data}`);
