@@ -7,10 +7,11 @@ import { router, useFocusEffect } from 'expo-router';
 import { noteTitle } from '@/utils/backend'
 import { ScrollView, Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 import { TitleList } from '@/components/titleList';
-import { saveNote, queryNotesWithVoice, ping } from '@/utils/backend'
+import { saveNote, chatWithNotes, ping } from '@/utils/backend'
 import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
 import { Audio } from 'expo-av';
 import TimerProgressBar from '@/components/timer';
+import { transcribe } from 'whisper-kit-expo';
 
 enum TabState {
   RECENT = 'Recent',
@@ -120,8 +121,9 @@ const NoteQueryView: React.FC<{username: string}> = ({ username }) => {
       }
 
       try {
-        console.log("Querying notes with voice");
-        const content = await queryNotesWithVoice(username, fileUri);
+
+        const query = await transcribe(fileUri);
+        const content = await chatWithNotes(username, query);
         setText(content);
       } catch (err) {
         console.log("There was an error: ", err);

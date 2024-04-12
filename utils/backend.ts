@@ -134,21 +134,14 @@ export async function transcribeNoteAndSave(username: string, fileUri: string): 
 }
 
 
-export async function queryNotesWithVoice(username: string, fileUri: string): Promise<string> {
+export async function chatWithNotes(username: string, query: string): Promise<string> {
+    console.log('about to chat w notes');
     const url = getBackendURL();
     try {
-        const result = await fs.uploadAsync(`${url}/users/${username}/notes/chat`, fileUri, {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": 'multipart/form-data'
-            },
-            fieldName: 'speech_bytes',
-            httpMethod: 'POST',
-            uploadType: fs.FileSystemUploadType.MULTIPART
-            });
-        return JSON.parse(result.body).text;
+        const result = await axios.post(`${url}/users/${username}/notes/chat`, { content: query } );
+        return result.data.text;
     } catch (error) {
-        console.log("Error in audio transcription: ", error);
+        console.log("Error in note chat: ", JSON.stringify(error));
         return JSON.stringify(error);
     }
 
