@@ -9,7 +9,7 @@ import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, 
 import { Ionicons } from '@expo/vector-icons';
 import TimerProgressBar from '@/components/timer';
 import { useAuth } from '@/utils/auth';
-import { transcribe } from 'whisper-kit-expo';
+import { transcribe, loadTranscriber } from 'whisper-kit-expo';
 
 enum NoteTakingState {
   RECORDING_NOTE,
@@ -32,6 +32,11 @@ export default function NoteTakingPage() {
   const [debug, setDebug] = useState('');
 
   const user = useAuth();
+
+  useFocusEffect(useCallback(() => {
+    console.log('loading...'); 
+    loadTranscriber().then((result) => console.log(result ? "success" : "failure"));
+  }, []));
 
   const goToNotes = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
     if (event.nativeEvent.state === State.END) {

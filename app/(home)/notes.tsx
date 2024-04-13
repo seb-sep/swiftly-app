@@ -11,7 +11,7 @@ import { saveNote, chatWithNotes, ping } from '@/utils/backend'
 import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
 import { Audio } from 'expo-av';
 import TimerProgressBar from '@/components/timer';
-import { transcribe } from 'whisper-kit-expo';
+import { transcribe, loadTranscriber } from 'whisper-kit-expo';
 
 enum TabState {
   RECENT = 'Recent',
@@ -29,6 +29,9 @@ export default function NotesPage() {
         router.replace('/');
       }
     };
+
+
+    useFocusEffect(useCallback(() => loadTranscriber, []));
  
     useFocusEffect(useCallback(() => {
       const user = auth.currentUser;
@@ -108,6 +111,7 @@ const NoteQueryView: React.FC<{username: string}> = ({ username }) => {
   const [recording, setRecording] = useState<Audio.Recording>();
   const [fileUri, setFileUri] = useState('');
   const [text, setText] = useState('');
+
 
   async function queryNotes() {
     if (state === QueryState.RECORDING_CHAT && recording) {

@@ -651,7 +651,7 @@ PODS:
     - React-Core
     - React-RCTImage
   - SocketRocket (0.6.1)
-  - WhisperKitExpo (0.1.1):
+  - WhisperKitExpo (0.2.0):
     - cocoa-whisper
     - ExpoModulesCore
   - Yoga (1.14.0)
@@ -955,7 +955,7 @@ SPEC CHECKSUMS:
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 50ffe2fa2342eabb2d0afbe19f7c1af286bc7fb3
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  WhisperKitExpo: 840ceca042e0f73635805dae78ea6c7347a5b5ef
+  WhisperKitExpo: 71e68099d82a505b024821233b21a4922988cd4c
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
 
 PODFILE CHECKSUM: 81778dba82ffe3fd4498a8bd37d265d84a02537b
