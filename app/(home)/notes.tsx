@@ -31,8 +31,6 @@ export default function NotesPage() {
     };
 
 
-    useFocusEffect(useCallback(() => loadTranscriber, []));
- 
     useFocusEffect(useCallback(() => {
       const user = auth.currentUser;
 
