@@ -1,11 +1,11 @@
-import { View, FlatList, StyleSheet, TouchableOpacity, Text, Pressable } from 'react-native';
+import { View, ScrollView, FlatList, StyleSheet, TouchableOpacity, Text, Pressable } from 'react-native';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { getTitles } from '@/utils/backend';
 import { auth } from '@/firebaseConfig';
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { noteTitle } from '@/utils/backend'
-import { ScrollView, Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 import { TitleList } from '@/components/titleList';
 import { saveNote, chatWithNotes, ping } from '@/utils/backend'
 import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
@@ -189,7 +189,7 @@ const NoteQueryView: React.FC<{username: string}> = ({ username }) => {
           style={[styles.button, styles.cancelButton, {backgroundColor: state === QueryState.RECORDING_CHAT ? 'indianred' : 'gray'}]}
           onPress={cancelRecordingOnPress}
         >
-          <Ionicons name="ios-backspace-outline" size={48} color="white" />
+          <Ionicons name="backspace-outline" size={48} color="white" />
         </Pressable>
       </View>
     </View>

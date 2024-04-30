@@ -1,11 +1,10 @@
 import { useCallback, useState } from 'react';
-import { Button, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { transcribeNoteAndSave, ping, saveNote } from '@/utils/backend'
+import { Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { ping, saveNote } from '@/utils/backend'
 import { startRecording, stopRecording, cancelRecording } from '@/utils/record';
 import { Audio } from 'expo-av';
 import { Link, router, useFocusEffect } from 'expo-router';
-import { onAuthStateChanged } from 'firebase/auth';
-import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, ScrollView, State } from 'react-native-gesture-handler';
+import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import TimerProgressBar from '@/components/timer';
 import { useAuth } from '@/utils/auth';
@@ -141,7 +140,7 @@ async function cancelRecordingOnPress() {
               style={[styles.button, {backgroundColor: state === NoteTakingState.QUERYING ? 'gray' : 'mediumseagreen'}]} 
               onPress={state === NoteTakingState.RECORDING_NOTE ? transcribeAndSave : () => recordOnPress()}
             >
-              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "ios-cloud-upload-outline"} size={48} color="white" />
+              <Ionicons name={state !== NoteTakingState.RECORDING_NOTE ? "mic-outline" : "cloud-upload-outline"} size={48} color="white" />
               <Text style={{color: 'white', fontSize: 20}}>{state !== NoteTakingState.RECORDING_NOTE ? 'record note' : 'save note'}</Text>
             </Pressable>
             <Pressable
@@ -149,7 +148,7 @@ async function cancelRecordingOnPress() {
               style={[styles.button, styles.cancelButton, {backgroundColor: state === NoteTakingState.RECORDING_NOTE ? 'indianred' : 'gray'}]}
               onPress={cancelRecordingOnPress}
             >
-              <Ionicons name="ios-backspace-outline" size={48} color="white" />
+              <Ionicons name="backspace-outline" size={48} color="white" />
             </Pressable>
           </View>
       </View>

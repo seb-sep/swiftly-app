@@ -7,6 +7,18 @@ podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties
 ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 
+plugin "cocoapods-spm"
+
+config_cocoapods_spm(
+  dont_prebuild_macros: true,
+  default_macro_config: "debug"
+)
+
+spm_pkg "WhisperKit",
+  :url => "https://github.com/argmaxinc/WhisperKit.git",
+  :version => "0.6.0",
+  :products => ["WhisperKit"]
+
 platform :ios, podfile_properties['ios.deploymentTarget'] || '16.0'
 install! 'cocoapods',
   :deterministic_uuids => false
@@ -65,7 +77,7 @@ target 'swiftly' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    # __apply_Xcode_12_5_M1_post_install_workaround(installer)
 
     # This is necessary for Xcode 14, because it signs resource bundles by default
     # when building for devices.

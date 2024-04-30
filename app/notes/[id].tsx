@@ -1,7 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { getNote, deleteNote, setNoteFavorite, Note } from "@/utils/backend"
-import { loadUsername } from "@/utils/datastore";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Link, router } from 'expo-router';
 import { auth } from "@/firebaseConfig";

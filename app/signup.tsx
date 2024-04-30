@@ -4,7 +4,7 @@ import { Link, router } from 'expo-router';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig';
 import { createAccount } from '../utils/backend';
-import { Directions, FlingGestureHandler, GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
+// import { GestureHandlerStateChangeNativeEvent, State } from 'react-native-gesture-handler';
 
 export default function SignUpPage() {
 
@@ -47,11 +47,11 @@ export default function SignUpPage() {
         }
     }
     
-    const goToSignIn = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
-      if (event.nativeEvent.state === State.END) {
-        router.replace('/signin');
-      }
-    };
+    // const goToSignIn = (event: { nativeEvent: GestureHandlerStateChangeNativeEvent }) => {
+    //   if (event.nativeEvent.state === State.END) {
+    //     router.replace('/signin');
+    //   }
+    // };
 
     return (
         <View style={styles.container}>
