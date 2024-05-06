@@ -1272,7 +1272,7 @@ PODS:
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - SocketRocket (0.6.1)
-  - WhisperKitExpo (1.0.0):
+  - WhisperKitExpo (1.1.0):
     - ExpoModulesCore
   - Yoga (1.14.0)
 
@@ -1602,9 +1602,9 @@ SPEC CHECKSUMS:
   RNReanimated: f6b02d8f5eaa2830296411d4ec3b8ef5442dd13d
   RNScreens: 17e2f657f1b09a71ec3c821368a04acbb7ebcb46
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  WhisperKitExpo: 131add0b955aeaa63916b2ebfe497a6f3668bf94
+  WhisperKitExpo: 4cf1f3b7626a9ff16de114dc5f9b07c0373835c7
   Yoga: 805bf71192903b20fc14babe48080582fee65a80
 
-PODFILE CHECKSUM: 79172d14d5007873c9f90c0b1c6aa209f1dc429a
+PODFILE CHECKSUM: b94483eed6e729d987c9cb851bcf8a6ddb3f7bc9
 
 COCOAPODS: 1.15.2

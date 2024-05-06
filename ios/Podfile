@@ -7,18 +7,6 @@ podfile_properties = JSON.parse(File.read(File.join(__dir__, 'Podfile.properties
 ENV['RCT_NEW_ARCH_ENABLED'] = podfile_properties['newArchEnabled'] == 'true' ? '1' : '0'
 ENV['EX_DEV_CLIENT_NETWORK_INSPECTOR'] = podfile_properties['EX_DEV_CLIENT_NETWORK_INSPECTOR']
 
-plugin "cocoapods-spm"
-
-config_cocoapods_spm(
-  dont_prebuild_macros: true,
-  default_macro_config: "debug"
-)
-
-spm_pkg "WhisperKit",
-  :url => "https://github.com/argmaxinc/WhisperKit.git",
-  :version => "0.6.0",
-  :products => ["WhisperKit"]
-
 platform :ios, podfile_properties['ios.deploymentTarget'] || '16.0'
 install! 'cocoapods',
   :deterministic_uuids => false
@@ -99,3 +87,26 @@ target 'swiftly' do
     end
   end
 end
+
+
+### START WHISPERKIT PLUGIN SCRIPT ###
+
+# This script was automatically added by the whisper-kit-expo library upon installation.
+# The same cannot happen for uninstallation: 
+# https://docs.npmjs.com/cli/v10/using-npm/scripts#a-note-on-a-lack-of-npm-uninstall-scripts
+# Remove this script manually if you are uninstalling the whisper-kit-expo library.
+# Learn more about cocoapods-spm, used to integrate SPM dependencies with CocoaPods, here:
+# https://github.com/trinhngocthuyen/cocoapods-spm
+
+plugin "cocoapods-spm"
+
+config_cocoapods_spm(
+  dont_prebuild_macros: true,
+  default_macro_config: "debug"
+)
+
+spm_pkg "WhisperKit",
+  :url => "https://github.com/argmaxinc/WhisperKit.git",
+  :version => "0.6.0",
+  :products => ["WhisperKit"]
+### END WHISPERKIT PLUGIN SCRIPT ###
